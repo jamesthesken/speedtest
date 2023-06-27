@@ -2,12 +2,29 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import SpeedTest from "@cloudflare/speedtest";
+import Results from "@/components/Results";
+
+export type SpeedTestResults = {
+  download?: number | undefined;
+  upload?: number | undefined;
+  latency?: number | undefined;
+  jitter?: number | undefined;
+  downLoadedLatency?: number | undefined;
+  downLoadedJitter?: number | undefined;
+  upLoadedLatency?: number | undefined;
+  upLoadedJitter?: number | undefined;
+  packetLoss?: number | undefined;
+  epoch: any;
+  dateTime: any;
+};
 
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
 
   const config = {
-    autoStart: false,
+    autoStart: true,
+    downloadApiUrl: "https://speed.cloudflare.com/__down",
+    uploadApiUrl: "https://speed.cloudflare.com/__up",
     measurements: [
       { type: "latency", numPackets: 1 }, // initial latency estimation
       { type: "download", bytes: 1e5, count: 1, bypassMinDuration: true }, // initial download estimation
@@ -79,6 +96,7 @@ export default function Home() {
         {speedTestResults && (
           <div>
             <h1>Speed Test Results:</h1>
+            <Results {...speedTestResults} />
             <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
             <p>Streaming Points: {speedTestResults.download}</p>
           </div>
