@@ -1,8 +1,86 @@
 "use client";
-import { useEffect, useState } from "react";
+//import { useEffect, useState } from "react";
 import Image from "next/image";
 import SpeedTest from "@cloudflare/speedtest";
-import Results from "@/components/Results";
+import Results from "../components/results";
+
+//import * as React from 'react';
+//import {render} from 'react-dom';
+//import Map from 'react-map-gl';
+
+import * as React from 'react';
+import {useState, useEffect, useMemo, useCallback} from 'react';
+import {render} from 'react-dom';
+import Map, {Source, Layer} from 'react-map-gl';
+import ControlPanel from '../components/control-panel';
+
+import {dataLayer} from '../components/map-style';
+import {updatePercentiles} from '../components/utils';
+
+const MAPBOX_TOKEN = 'pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ';
+const MAPBOX_STYLE = 'mapbox://styles/jreese808/cljd92qex000801r4fnlh083d'
+
+const geojson = {
+  type: 'FeatureCollection',
+  features: [
+    {type: 'Feature', geometry: {type: 'Point', coordinates: [-157.2, 20.6]}}
+  ]
+};
+
+export function App() {
+  const [mapStyle, setMapStyle] = useState(null);
+  const [allData, setAllData] = useState(null);
+  const [hoverInfo, setHoverInfo] = useState(null);
+  const [settings, setSettings] = useState({
+    scrollZoom: true,
+    dragRotate: false,
+    keyboard: false,
+    doubleClickZoom: true,
+    touchZoomRotate: false,
+    touchPitch: false,
+    minZoom: 5.01,
+    maxZoom: 15,
+    maxBounds: [[-167.2, 15.8], //Southwest
+             [-147.2, 25.6]], //Northeast
+  });
+  const onHover = useCallback(event => {
+    const {
+      features,
+      point: {x, y}
+    } = event;
+    const hoveredFeature = features && features[0];
+
+    // prettier-ignore
+    setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
+  }, []);
+
+  return (
+    <>
+      <Map
+        initialViewState={{
+          latitude: 20.6,
+          longitude: -157.2,
+          zoom: 5.5
+        }}{...settings}
+        style={{width: 600, height: 400}}
+        mapStyle={MAPBOX_STYLE}
+        styleDiffing
+        mapboxAccessToken={MAPBOX_TOKEN}
+        interactiveLayerIds={['broadband']}
+        onMouseMove={onHover}
+      >
+      <Source id="my-data" type="geojson" data={broadband}>
+        <Layer {...broadband} />
+      </Source>
+      {hoverInfo && (
+        <div className="tooltip" style={{left: hoverInfo.x, top: hoverInfo.y}}>
+          <div>State: {hoverInfo.feature.properties.name}</div>
+        </div>
+      )}
+      </Map>
+    </>
+  );
+}//<ControlPanel onChange={setMapStyle} />
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -92,6 +170,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <App />
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         {speedTestResults && (
           <div>
