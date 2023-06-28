@@ -14,8 +14,10 @@ import { render } from "react-dom";
 import Map, { Source, Layer, FillLayer } from "react-map-gl";
 import ControlPanel from "../components/control-panel";
 
-import { dataLayer } from "../components/map-style";
+// import { dataLayer } from "../components/map-style";
 import { updatePercentiles } from "../components/utils";
+
+import { useForm } from "react-hook-form";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ";
@@ -24,6 +26,33 @@ const MAPBOX_STYLE = "mapbox://styles/jreese808/cljd92qex000801r4fnlh083d";
 type HoverInfo = {
   properties: {
     geoid: string;
+    d_mbps: number;
+    devices: number;
+    devices_per_cap: number;
+    f_asian: number;
+    f_ba: number;
+    f_black: number;
+    f_broadband: number;
+    f_computer: number;
+    f_hawaiian: number;
+    f_hispanic: number;
+    f_white: number;
+    fiber_100u_exists: number;
+    households: number;
+    lat_ms: number;
+    log_mhi: number;
+    max_dn: number;
+    max_up: number;
+    mhi: number;
+    n_dn10: number;
+    n_dn100: number;
+    n_dn250: number;
+    n_fiber_100u: number;
+    n_isp: number;
+    population: number;
+    tests: number;
+    tests_per_cap: number;
+    u_mbps: number;
   };
 };
 
@@ -46,6 +75,53 @@ export function BroadBandMap() {
     ], //Northeast
   });
 
+  const mapProperties = {
+    f_broadband: {
+      feature: "f_broadband",
+      name: "Broadband Access",
+      description: "Frac. of Households with Broadband Subscription",
+      colorStops: [
+        [60, "#800000"],
+        [70, "#b81414"],
+        [80, "#d13400"],
+        [90, "#ffcd38"],
+        [100, "#ffff33"],
+      ],
+    },
+    tests_per_cap: {
+      feature: "tests_per_cap",
+      name: "Tests per Capita",
+      description: "Ookla Tests, Per Capita",
+      colorStops: [
+        [0, "#800000"],
+        [0.01, "#b81414"],
+        [0.025, "#d13400"],
+        [0.05, "#ffcd38"],
+        [0.1, "#ffff33"],
+      ],
+    },
+  };
+
+  const [mapLayer, setMapLayer] = useState(mapProperties["f_broadband"]);
+
+  useEffect(() => {
+    console.log(mapLayer);
+  }, [mapLayer]);
+
+  const dataLayer: FillLayer = {
+    id: "broadband",
+    type: "fill",
+    source: "mapbox",
+    "source-layer": "broadband",
+    paint: {
+      "fill-color": {
+        property: mapLayer.feature,
+        stops: mapLayer.colorStops,
+      },
+      "fill-opacity": 0.8,
+    },
+  };
+
   const onHover = useCallback((event) => {
     const {
       features,
@@ -56,6 +132,8 @@ export function BroadBandMap() {
     setHoverInfo(hoveredFeature?.toJSON());
   }, []);
 
+  const { register, handleSubmit } = useForm();
+
   return (
     <>
       <Map
@@ -64,7 +142,7 @@ export function BroadBandMap() {
           longitude: -157.2,
           zoom: 5.5,
         }}
-        style={{ width: 600, height: 400 }}
+        style={{ width: "100%", height: 400 }}
         mapStyle={MAPBOX_STYLE}
         styleDiffing
         mapboxAccessToken={MAPBOX_TOKEN}
@@ -74,6 +152,64 @@ export function BroadBandMap() {
         <Source id={"cljd92qex000801r4fnlh083d"} type="vector">
           <Layer {...dataLayer} />
         </Source>
+        <form className="absolute top-0 bg-gray-700 h-full w-80 p-8">
+          <label className="text-base font-semibold text-gray-300">
+            Metrics
+          </label>
+          <fieldset className="mt-4">
+            <legend className="sr-only">Notification method</legend>
+            {Object.keys(mapProperties).map((keyName, i) => (
+              <div key={i} className="flex items-center">
+                <input
+                  name="metrics-name"
+                  type="radio"
+                  value={
+                    mapProperties[keyName as keyof typeof mapProperties].feature
+                  }
+                  onChange={(e) =>
+                    setMapLayer(
+                      mapProperties[
+                        e.target.value as keyof typeof mapProperties
+                      ]
+                    )
+                  }
+                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                />
+                <label
+                  htmlFor={
+                    mapProperties[keyName as keyof typeof mapProperties].name
+                  }
+                  className="ml-3 block text-sm font-medium leading-6 text-gray-300"
+                >
+                  {mapProperties[keyName as keyof typeof mapProperties].name}
+                </label>
+                <label>
+                  {
+                    hoverInfo?.properties[
+                      mapProperties[keyName as keyof typeof mapProperties]
+                        .feature as keyof typeof mapProperties
+                    ]
+                  }
+                </label>
+              </div>
+            ))}
+          </fieldset>
+          {/* <select
+            {...register("layer")}
+            onChange={(e) =>
+              setMapLayer(
+                mapProperties[e.target.value as keyof typeof mapProperties]
+              )
+            }
+          >
+            <option key="f_broadband" value="f_broadband">
+              Broadband
+            </option>
+            <option key="tests_per_cap" value="tests_per_cap">
+              Tests
+            </option>
+          </select> */}
+        </form>
         {hoverInfo && (
           <div className="tooltip">
             <div>Geo ID: {hoverInfo.properties.geoid}</div>
@@ -171,18 +307,21 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div className="flex w-full">
       <BroadBandMap />
-      {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        {speedTestResults && (
-          <div>
-            <h1>Speed Test Results:</h1>
-            <Results {...speedTestResults} />
-            <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
-            <p>Streaming Points: {speedTestResults.download}</p>
-          </div>
-        )}
-      </div> */}
-    </main>
+    </div>
+    // <main className="flex">
+
+    //   {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+    //     {speedTestResults && (
+    //       <div>
+    //         <h1>Speed Test Results:</h1>
+    //         <Results {...speedTestResults} />
+    //         <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
+    //         <p>Streaming Points: {speedTestResults.download}</p>
+    //       </div>
+    //     )}
+    //   </div> */}
+    // </main>
   );
 }
