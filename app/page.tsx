@@ -8,29 +8,29 @@ import Results from "../components/results";
 //import {render} from 'react-dom';
 //import Map from 'react-map-gl';
 
-import * as React from 'react';
-import {useState, useEffect, useMemo, useCallback} from 'react';
-import {render} from 'react-dom';
-import Map, {Source, Layer} from 'react-map-gl';
-import ControlPanel from '../components/control-panel';
+import * as React from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { render } from "react-dom";
+import Map, { Source, Layer, FillLayer } from "react-map-gl";
+import ControlPanel from "../components/control-panel";
 
-import {dataLayer} from '../components/map-style';
-import {updatePercentiles} from '../components/utils';
+import { dataLayer } from "../components/map-style";
+import { updatePercentiles } from "../components/utils";
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ';
-const MAPBOX_STYLE = 'mapbox://styles/jreese808/cljd92qex000801r4fnlh083d'
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ";
+const MAPBOX_STYLE = "mapbox://styles/jreese808/cljd92qex000801r4fnlh083d";
 
-const geojson = {
-  type: 'FeatureCollection',
-  features: [
-    {type: 'Feature', geometry: {type: 'Point', coordinates: [-157.2, 20.6]}}
-  ]
+type HoverInfo = {
+  properties: {
+    geoid: string;
+  };
 };
 
-export function App() {
+export function BroadBandMap() {
   const [mapStyle, setMapStyle] = useState(null);
   const [allData, setAllData] = useState(null);
-  const [hoverInfo, setHoverInfo] = useState(null);
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo>();
   const [settings, setSettings] = useState({
     scrollZoom: true,
     dragRotate: false,
@@ -40,18 +40,20 @@ export function App() {
     touchPitch: false,
     minZoom: 5.01,
     maxZoom: 15,
-    maxBounds: [[-167.2, 15.8], //Southwest
-             [-147.2, 25.6]], //Northeast
+    maxBounds: [
+      [-167.2, 15.8], //Southwest
+      [-147.2, 25.6],
+    ], //Northeast
   });
-  const onHover = useCallback(event => {
+
+  const onHover = useCallback((event) => {
     const {
       features,
-      point: {x, y}
+      point: { x, y },
     } = event;
     const hoveredFeature = features && features[0];
-
     // prettier-ignore
-    setHoverInfo(hoveredFeature && {feature: hoveredFeature, x, y});
+    setHoverInfo(hoveredFeature?.toJSON());
   }, []);
 
   return (
@@ -60,27 +62,27 @@ export function App() {
         initialViewState={{
           latitude: 20.6,
           longitude: -157.2,
-          zoom: 5.5
-        }}{...settings}
-        style={{width: 600, height: 400}}
+          zoom: 5.5,
+        }}
+        style={{ width: 600, height: 400 }}
         mapStyle={MAPBOX_STYLE}
         styleDiffing
         mapboxAccessToken={MAPBOX_TOKEN}
-        interactiveLayerIds={['broadband']}
+        interactiveLayerIds={["broadband"]}
         onMouseMove={onHover}
       >
-      <Source id="my-data" type="geojson" data={broadband}>
-        <Layer {...broadband} />
-      </Source>
-      {hoverInfo && (
-        <div className="tooltip" style={{left: hoverInfo.x, top: hoverInfo.y}}>
-          <div>State: {hoverInfo.feature.properties.name}</div>
-        </div>
-      )}
+        <Source id={"cljd92qex000801r4fnlh083d"} type="vector">
+          <Layer {...dataLayer} />
+        </Source>
+        {hoverInfo && (
+          <div className="tooltip">
+            <div>Geo ID: {hoverInfo.properties.geoid}</div>
+          </div>
+        )}
       </Map>
     </>
   );
-}//<ControlPanel onChange={setMapStyle} />
+} //<ControlPanel onChange={setMapStyle} />
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -170,8 +172,8 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <App />
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+      <BroadBandMap />
+      {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         {speedTestResults && (
           <div>
             <h1>Speed Test Results:</h1>
@@ -180,7 +182,7 @@ export default function Home() {
             <p>Streaming Points: {speedTestResults.download}</p>
           </div>
         )}
-      </div>
+      </div> */}
     </main>
   );
 }
