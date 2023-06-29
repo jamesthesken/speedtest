@@ -79,7 +79,7 @@ export function BroadBandMap() {
     f_broadband: {
       feature: "f_broadband",
       name: "Broadband Access",
-      description: "Frac. of Households with Broadband Subscription",
+      description: "% of Households with Broadband Subscription",
       colorStops: [
         [60, "#800000"],
         [70, "#b81414"],
@@ -91,7 +91,7 @@ export function BroadBandMap() {
     f_computer: {
       feature: "f_computer",
       name: "Computer in HH",
-      description: "% of Households</br>with a Computer",
+      description: "% of Households with a Computer",
       colorStops: [
         [60, "#800000"],
         [70, "#b81414"],
@@ -103,7 +103,7 @@ export function BroadBandMap() {
     f_ba: {
       feature: "f_ba",
       name: "% College Grads",
-      description: "% of Adult</br>Population with a BA",
+      description: "% of Adult Population with a BA",
       colorStops: [
         [0, "#800000"],
         [25, "#b81414"],
@@ -115,7 +115,7 @@ export function BroadBandMap() {
     f_hawaiian: {
       feature: "f_hawaiian",
       name: "% Hawaiian",
-      description: "Share of Population</br>that is Hawaiian",
+      description: "Share of Population that is Hawaiian",
       colorStops: [
         [0, "#800000"],
         [25, "#b81414"],
@@ -151,7 +151,7 @@ export function BroadBandMap() {
     n_dn10: {
       feature: "n_dn10",
       name: "ISPs @ 10 Mbps",
-      description: "# of ISPs with &gt; 10 Mbps Downstream",
+      description: "# of ISPs with > 10 Mbps Downstream",
       colorStops: [
         [0, "#800000"],
         [1, "#b81414"],
@@ -163,7 +163,7 @@ export function BroadBandMap() {
     n_dn100: {
       feature: "n_dn100",
       name: "ISPs @ 100 Mbps",
-      description: "# of ISPs with &gt; 100 Mbps Downstream",
+      description: "# of ISPs with > 100 Mbps Downstream",
       colorStops: [
         [0, "#800000"],
         [1, "#b81414"],
@@ -175,7 +175,7 @@ export function BroadBandMap() {
     n_dn250: {
       feature: "n_dn250",
       name: "ISPs @ 250 Mbps",
-      description: "# of ISPs with &gt; 250 Mbps Downstream",
+      description: "# of ISPs with > 250 Mbps Downstream",
       colorStops: [
         [0, "#800000"],
         [1, "#b81414"],
@@ -187,7 +187,7 @@ export function BroadBandMap() {
     n_fiber_100u: {
       feature: "n_fiber_100u",
       name: "Fiber ISPs @ 100 Up",
-      description: "# Fiber Offerings with Upstream &gt; 100 Mbps",
+      description: "# Fiber Offerings with Upstream > 100 Mbps",
       colorStops: [
         [0, "#800000"],
         [1, "#b81414"],
@@ -211,7 +211,7 @@ export function BroadBandMap() {
     max_dn: {
       feature: "max_dn",
       name: "Max Adv. Downstream",
-      description: "Max Available</br>Downstream Speed",
+      description: "Max Available Downstream Speed",
       colorStops: [
         [0, "#800000"],
         [25, "#b81414"],
@@ -223,7 +223,7 @@ export function BroadBandMap() {
     max_up: {
       feature: "max_up",
       name: "Max Adv. Upstream",
-      description: "Max Available</br>Upstream Speed",
+      description: "Max Available Upstream Speed",
       colorStops: [
         [0, "#800000"],
         [25, "#b81414"],
@@ -259,7 +259,7 @@ export function BroadBandMap() {
     lat_ms: {
       feature: "lat_ms",
       name: "Avg. Latency",
-      description: "Average Fixed-Line</br>Latency [ms]",
+      description: "Average Fixed-Line Latency [ms]",
       colorStops: [
         [0, "#800000"],
         [10, "#b81414"],
@@ -334,7 +334,7 @@ export function BroadBandMap() {
           longitude: -157.2,
           zoom: 5.5,
         }}
-        style={{ width: "100%", height: 520 }}
+        style={{ width: "100%", height: 600 }}
         mapStyle={MAPBOX_STYLE}
         styleDiffing
         mapboxAccessToken={MAPBOX_TOKEN}
@@ -351,12 +351,17 @@ export function BroadBandMap() {
           <fieldset className="mt-4">
             <legend className="sr-only">Notification method</legend>
             {Object.keys(mapProperties).map((keyName, i) => (
-              <div key={i} className="flex items-center">
+              <div className="flex flex-col">
+              <div key={i} className="flex flex-row items-center">
+                <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
                 <input
                   name="metrics-name"
                   type="radio"
                   value={
                     mapProperties[keyName as keyof typeof mapProperties].feature
+                  }
+                  defaultChecked={
+                    mapProperties[keyName as keyof typeof mapProperties].feature == "f_broadband"
                   }
                   onChange={(e) =>
                     setMapLayer(
@@ -366,14 +371,7 @@ export function BroadBandMap() {
                     )
                   }
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                />
-                <label
-                  htmlFor={
-                    mapProperties[keyName as keyof typeof mapProperties].name
-                  }
-                  className="ml-3 block text-sm font-medium leading-6 text-gray-300"
-                >
-                  {mapProperties[keyName as keyof typeof mapProperties].name}
+                /> {mapProperties[keyName as keyof typeof mapProperties].name}
                 </label>
                 <label>
                   {
@@ -383,30 +381,21 @@ export function BroadBandMap() {
                     ]
                   }
                 </label>
+                
+              </div>
+              {mapLayer.feature === mapProperties[keyName as keyof typeof mapProperties].feature && 
+                <div className="ml-4"><label>{mapProperties[keyName as keyof typeof mapProperties].description}</label>
+                <div className="flex flex-row">
+                  {mapProperties[keyName as keyof typeof mapProperties].colorStops.map((colors, index) => (
+                  <div className="flex flex-col"><div className={`bg-[${colors[1]}] w-9 h-4`}></div><span className="text-xs flex justify-center">{colors[0]}</span></div>
+                  ))}
+                </div>
+                </div>
+              }
               </div>
             ))}
           </fieldset>
-          {/* <select
-            {...register("layer")}
-            onChange={(e) =>
-              setMapLayer(
-                mapProperties[e.target.value as keyof typeof mapProperties]
-              )
-            }
-          >
-            <option key="f_broadband" value="f_broadband">
-              Broadband
-            </option>
-            <option key="tests_per_cap" value="tests_per_cap">
-              Tests
-            </option>
-          </select> */}
         </form>
-        {hoverInfo && (
-          <div className="tooltip">
-            <div>Geo ID: {hoverInfo.properties.geoid}</div>
-          </div>
-        )}
       </Map>
     </>
   );
