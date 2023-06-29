@@ -88,6 +88,186 @@ export function BroadBandMap() {
         [100, "#ffff33"],
       ],
     },
+    f_computer: {
+      feature: "f_computer",
+      name: "Computer in HH",
+      description: "% of Households</br>with a Computer",
+      colorStops: [
+        [60, "#800000"],
+        [70, "#b81414"],
+        [80, "#d13400"],
+        [90, "#ffcd38"],
+        [100, "#ffff33"],
+      ],
+    },
+    f_ba: {
+      feature: "f_ba",
+      name: "% College Grads",
+      description: "% of Adult</br>Population with a BA",
+      colorStops: [
+        [0, "#800000"],
+        [25, "#b81414"],
+        [50, "#d13400"],
+        [75, "#ffcd38"],
+        [100, "#ffff33"],
+      ],
+    },
+    f_hawaiian: {
+      feature: "f_hawaiian",
+      name: "% Hawaiian",
+      description: "Share of Population</br>that is Hawaiian",
+      colorStops: [
+        [0, "#800000"],
+        [25, "#b81414"],
+        [50, "#d13400"],
+        [75, "#ffcd38"],
+        [100, "#ffff33"],
+      ],
+    },
+    log_mhi: {
+      feature: "log_mhi",
+      name: "Log Income",
+      description: "Log. of Median Household Income",
+      colorStops: [
+        [10, "#800000"],
+        [10.5, "#b81414"],
+        [11, "#d13400"],
+        [11.5, "#ffcd38"],
+        [12, "#ffff33"],
+      ],
+    },
+    n_isp: {
+      feature: "n_isp",
+      name: "# of ISPs",
+      description: "Number of ISPs",
+      colorStops: [
+        [0, "#800000"],
+        [1, "#b81414"],
+        [2, "#d13400"],
+        [3, "#ffcd38"],
+        [4, "#ffff33"],
+      ],
+    },
+    n_dn10: {
+      feature: "n_dn10",
+      name: "ISPs @ 10 Mbps",
+      description: "# of ISPs with &gt; 10 Mbps Downstream",
+      colorStops: [
+        [0, "#800000"],
+        [1, "#b81414"],
+        [2, "#d13400"],
+        [3, "#ffcd38"],
+        [4, "#ffff33"],
+      ],
+    },
+    n_dn100: {
+      feature: "n_dn100",
+      name: "ISPs @ 100 Mbps",
+      description: "# of ISPs with &gt; 100 Mbps Downstream",
+      colorStops: [
+        [0, "#800000"],
+        [1, "#b81414"],
+        [2, "#d13400"],
+        [3, "#ffcd38"],
+        [4, "#ffff33"],
+      ],
+    },
+    n_dn250: {
+      feature: "n_dn250",
+      name: "ISPs @ 250 Mbps",
+      description: "# of ISPs with &gt; 250 Mbps Downstream",
+      colorStops: [
+        [0, "#800000"],
+        [1, "#b81414"],
+        [2, "#d13400"],
+        [3, "#ffcd38"],
+        [4, "#ffff33"],
+      ],
+    },
+    n_fiber_100u: {
+      feature: "n_fiber_100u",
+      name: "Fiber ISPs @ 100 Up",
+      description: "# Fiber Offerings with Upstream &gt; 100 Mbps",
+      colorStops: [
+        [0, "#800000"],
+        [1, "#b81414"],
+        [2, "#d13400"],
+        [3, "#ffcd38"],
+        [4, "#ffff33"],
+      ],
+    },
+    fiber_100u_exists: {
+      feature: "fiber_100u_exists",
+      name: "Fiber Availability",
+      description: "Share of Blocks with Fiber",
+      colorStops: [
+        [0, "#800000"],
+        [0.25, "#b81414"],
+        [0.50, "#d13400"],
+        [0.75, "#ffcd38"],
+        [1.00, "#ffff33"],
+      ],
+    },
+    max_dn: {
+      feature: "max_dn",
+      name: "Max Adv. Downstream",
+      description: "Max Available</br>Downstream Speed",
+      colorStops: [
+        [0, "#800000"],
+        [25, "#b81414"],
+        [100, "#d13400"],
+        [500, "#ffcd38"],
+        [1000, "#ffff33"],
+      ],
+    },
+    max_up: {
+      feature: "max_up",
+      name: "Max Adv. Upstream",
+      description: "Max Available</br>Upstream Speed",
+      colorStops: [
+        [0, "#800000"],
+        [25, "#b81414"],
+        [100, "#d13400"],
+        [500, "#ffcd38"],
+        [1000, "#ffff33"],
+      ],
+    },
+    d_mbps: {
+      feature: "d_mbps",
+      name: "Avg. Download Rate",
+      description: "Average Fixed-Line Downstream Speed [Mbps]",
+      colorStops: [
+        [0, "#800000"],
+        [25, "#b81414"],
+        [100, "#d13400"],
+        [200, "#ffcd38"],
+        [300, "#ffff33"],
+      ],
+    },
+    u_mbps: {
+      feature: "u_mbps",
+      name: "Avg. Upload Rate",
+      description: "Average Fixed-Line Upstream Speed [Mbps]",
+      colorStops: [
+        [0, "#800000"],
+        [10, "#b81414"],
+        [30, "#d13400"],
+        [50, "#ffcd38"],
+        [150, "#ffff33"],
+      ],
+    },
+    lat_ms: {
+      feature: "lat_ms",
+      name: "Avg. Latency",
+      description: "Average Fixed-Line</br>Latency [ms]",
+      colorStops: [
+        [0, "#800000"],
+        [10, "#b81414"],
+        [25, "#d13400"],
+        [50, "#ffcd38"],
+        [100, "#ffff33"],
+      ],
+    },
     tests_per_cap: {
       feature: "tests_per_cap",
       name: "Tests per Capita",
@@ -98,6 +278,18 @@ export function BroadBandMap() {
         [0.025, "#d13400"],
         [0.05, "#ffcd38"],
         [0.1, "#ffff33"],
+      ],
+    },
+    devices_per_cap: {
+      feature: "devices_per_cap",
+      name: "Devices per Capita",
+      description: "Devices Running Ookla Tests, Per Capita",
+      colorStops: [
+        [0, "#800000"],
+        [0.01, "#b81414"],
+        [0.02, "#d13400"],
+        [0.03, "#ffcd38"],
+        [0.05, "#ffff33"],
       ],
     },
   };
@@ -142,7 +334,7 @@ export function BroadBandMap() {
           longitude: -157.2,
           zoom: 5.5,
         }}
-        style={{ width: "100%", height: 400 }}
+        style={{ width: "100%", height: 520 }}
         mapStyle={MAPBOX_STYLE}
         styleDiffing
         mapboxAccessToken={MAPBOX_TOKEN}
@@ -154,7 +346,7 @@ export function BroadBandMap() {
         </Source>
         <form className="absolute top-0 bg-gray-700 h-full w-80 p-8">
           <label className="text-base font-semibold text-gray-300">
-            Metrics
+            Metrics Tract: {hoverInfo?.properties.geoid}
           </label>
           <fieldset className="mt-4">
             <legend className="sr-only">Notification method</legend>
