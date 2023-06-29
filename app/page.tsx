@@ -321,7 +321,9 @@ export function BroadBandMap() {
     } = event;
     const hoveredFeature = features && features[0];
     // prettier-ignore
-    setHoverInfo(hoveredFeature?.toJSON());
+    if (hoveredFeature?.toJSON() != undefined){
+      setHoverInfo(hoveredFeature?.toJSON());
+    }
   }, []);
 
   const { register, handleSubmit } = useForm();
@@ -346,7 +348,7 @@ export function BroadBandMap() {
         </Source>
         <form className="absolute top-0 bg-gray-700 h-full w-80 p-8">
           <label className="text-base font-semibold text-gray-300">
-            Metrics Tract: {hoverInfo?.properties.geoid}
+            Tract: {hoverInfo?.properties.geoid}
           </label>
           <fieldset className="mt-4">
             <legend className="sr-only">Notification method</legend>
@@ -373,7 +375,7 @@ export function BroadBandMap() {
                   className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
                 /> {mapProperties[keyName as keyof typeof mapProperties].name}
                 </label>
-                <label>
+                <label className="absolute right-4">
                   {
                     hoverInfo?.properties[
                       mapProperties[keyName as keyof typeof mapProperties]
