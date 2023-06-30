@@ -1,22 +1,8 @@
 "use client";
-//import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useState, useEffect, useCallback } from "react";
 import SpeedTest from "@cloudflare/speedtest";
 import Results from "../components/results";
-
-//import * as React from 'react';
-//import {render} from 'react-dom';
-//import Map from 'react-map-gl';
-
-import * as React from "react";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { render } from "react-dom";
 import Map, { Source, Layer, FillLayer } from "react-map-gl";
-import ControlPanel from "../components/control-panel";
-
-// import { dataLayer } from "../components/map-style";
-import { updatePercentiles } from "../components/utils";
-
 import { useForm } from "react-hook-form";
 
 const MAPBOX_TOKEN =
@@ -56,7 +42,7 @@ type HoverInfo = {
   };
 };
 
-export function BroadBandMap() {
+function BroadBandMap() {
   const [mapStyle, setMapStyle] = useState(null);
   const [allData, setAllData] = useState(null);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>();
@@ -314,7 +300,7 @@ export function BroadBandMap() {
     },
   };
 
-  const onHover = useCallback((event) => {
+  const onHover = useCallback((event: any) => {
     const {
       features,
       point: { x, y },
@@ -351,8 +337,8 @@ export function BroadBandMap() {
           <fieldset className="mt-4">
             <legend className="sr-only">Notification method</legend>
             {Object.keys(mapProperties).map((keyName, i) => (
-              <div className="flex flex-col">
-                <div key={i} className="flex flex-row items-center">
+              <div key={i} className="flex flex-col">
+                <div className="flex flex-row items-center">
                   <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
                     <input
                       name="metrics-name"
@@ -399,7 +385,7 @@ export function BroadBandMap() {
                       {mapProperties[
                         keyName as keyof typeof mapProperties
                       ].colorStops.map((colors, index) => (
-                        <div className="flex flex-col">
+                        <div key={index} className="flex flex-col">
                           <div className={`bg-[${colors[1]}] w-9 h-4`}></div>
                           <span className="text-xs flex justify-center">
                             {colors[0]}
