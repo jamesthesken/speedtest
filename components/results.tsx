@@ -10,7 +10,7 @@ function formatBytes(bits: number, decimals = 2) {
   const sizes = ["Bits", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
   const i = Math.floor(Math.log(bits) / Math.log(k));
-  console.log(`${parseFloat((bits / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`);
+  // console.log(`${parseFloat((bits / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`);
 
   return `${parseFloat((bits / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
