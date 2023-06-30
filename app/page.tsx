@@ -21,7 +21,8 @@ import { useForm } from "react-hook-form";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ";
-const MAPBOX_STYLE = "mapbox://styles/jreese808/cljd92qex000801r4fnlh083d";
+const MAPBOX_STYLE = "mapbox://styles/jreese808/cljizyjed001201rg0kq7fif5";
+
 
 type HoverInfo = {
   properties: {
@@ -294,7 +295,7 @@ export function BroadBandMap() {
     },
   };
 
-  const [mapLayer, setMapLayer] = useState(mapProperties["f_broadband"]);
+  const [mapLayer, setMapLayer] = useState(mapProperties["d_mbps"]);
 
   useEffect(() => {
     console.log(mapLayer);
@@ -303,14 +304,29 @@ export function BroadBandMap() {
   const dataLayer: FillLayer = {
     id: "broadband",
     type: "fill",
-    source: "mapbox",
-    "source-layer": "broadband",
+    // source: "mapbox",
+    "source-layer": "original",
     paint: {
       "fill-color": {
         property: mapLayer.feature,
         stops: mapLayer.colorStops,
       },
-      "fill-opacity": 0.8,
+      // "fill-opacity": 1,
+    },
+  };
+
+  const highlightLayer: FillLayer = {
+    id: 'broadband-highlighted',
+    type: 'fill',
+    source: 'broadband',
+    'source-layer': 'original',
+    paint: {
+      'fill-color': {
+        property: mapLayer.feature,
+        stops: mapLayer.colorStops,
+      },
+      // 'fill-opacity': 1,
+
     },
   };
 
@@ -326,6 +342,9 @@ export function BroadBandMap() {
     }
   }, []);
 
+  const selectedCounty = (hoverInfo && hoverInfo.properties.geoid) || '';
+  const filter = useMemo(() => ['in', 'geoid', selectedCounty], [selectedCounty]);
+
   const { register, handleSubmit } = useForm();
 
   return (
@@ -335,7 +354,7 @@ export function BroadBandMap() {
           latitude: 20.6,
           longitude: -157.2,
           zoom: 5.5,
-        }}
+        }}{...settings}
         style={{ width: "100%", height: 600 }}
         mapStyle={MAPBOX_STYLE}
         styleDiffing
@@ -343,8 +362,11 @@ export function BroadBandMap() {
         interactiveLayerIds={["broadband"]}
         onMouseMove={onHover}
       >
-        <Source id={"cljd92qex000801r4fnlh083d"} type="vector">
-          <Layer {...dataLayer} />
+        <Source  type="vector" url="jreese808.ce9n8i6v">
+        {/* id={"cljd92qex000801r4fnlh083d"} */}
+          
+          <Layer {...dataLayer}/>
+          <Layer {...highlightLayer} filter={filter}/>
         </Source>
         <form className="absolute top-0 bg-gray-700 h-full w-80 p-8">
           <label className="text-base font-semibold text-gray-300">
@@ -363,7 +385,7 @@ export function BroadBandMap() {
                     mapProperties[keyName as keyof typeof mapProperties].feature
                   }
                   defaultChecked={
-                    mapProperties[keyName as keyof typeof mapProperties].feature == "f_broadband"
+                    mapProperties[keyName as keyof typeof mapProperties].feature == "d_mbps"
                   }
                   onChange={(e) =>
                     setMapLayer(
