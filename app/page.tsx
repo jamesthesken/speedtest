@@ -203,9 +203,9 @@ export function BroadBandMap() {
       colorStops: [
         [0, "#800000"],
         [0.25, "#b81414"],
-        [0.50, "#d13400"],
+        [0.5, "#d13400"],
         [0.75, "#ffcd38"],
-        [1.00, "#ffff33"],
+        [1.0, "#ffff33"],
       ],
     },
     max_dn: {
@@ -352,46 +352,63 @@ export function BroadBandMap() {
             <legend className="sr-only">Notification method</legend>
             {Object.keys(mapProperties).map((keyName, i) => (
               <div className="flex flex-col">
-              <div key={i} className="flex flex-row items-center">
-                <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
-                <input
-                  name="metrics-name"
-                  type="radio"
-                  value={
-                    mapProperties[keyName as keyof typeof mapProperties].feature
-                  }
-                  defaultChecked={
-                    mapProperties[keyName as keyof typeof mapProperties].feature == "f_broadband"
-                  }
-                  onChange={(e) =>
-                    setMapLayer(
-                      mapProperties[
-                        e.target.value as keyof typeof mapProperties
+                <div key={i} className="flex flex-row items-center">
+                  <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
+                    <input
+                      name="metrics-name"
+                      type="radio"
+                      value={
+                        mapProperties[keyName as keyof typeof mapProperties]
+                          .feature
+                      }
+                      defaultChecked={
+                        mapProperties[keyName as keyof typeof mapProperties]
+                          .feature == "f_broadband"
+                      }
+                      onChange={(e) =>
+                        setMapLayer(
+                          mapProperties[
+                            e.target.value as keyof typeof mapProperties
+                          ]
+                        )
+                      }
+                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    />{" "}
+                    {mapProperties[keyName as keyof typeof mapProperties].name}
+                  </label>
+                  <label>
+                    {
+                      hoverInfo?.properties[
+                        mapProperties[keyName as keyof typeof mapProperties]
+                          .feature as keyof typeof mapProperties
                       ]
-                    )
-                  }
-                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                /> {mapProperties[keyName as keyof typeof mapProperties].name}
-                </label>
-                <label>
-                  {
-                    hoverInfo?.properties[
-                      mapProperties[keyName as keyof typeof mapProperties]
-                        .feature as keyof typeof mapProperties
-                    ]
-                  }
-                </label>
-                
-              </div>
-              {mapLayer.feature === mapProperties[keyName as keyof typeof mapProperties].feature && 
-                <div className="ml-4"><label>{mapProperties[keyName as keyof typeof mapProperties].description}</label>
-                <div className="flex flex-row">
-                  {mapProperties[keyName as keyof typeof mapProperties].colorStops.map((colors, index) => (
-                  <div className="flex flex-col"><div className={`bg-[${colors[1]}] w-9 h-4`}></div><span className="text-xs flex justify-center">{colors[0]}</span></div>
-                  ))}
+                    }
+                  </label>
                 </div>
-                </div>
-              }
+                {mapLayer.feature ===
+                  mapProperties[keyName as keyof typeof mapProperties]
+                    .feature && (
+                  <div className="ml-4">
+                    <label>
+                      {
+                        mapProperties[keyName as keyof typeof mapProperties]
+                          .description
+                      }
+                    </label>
+                    <div className="flex flex-row">
+                      {mapProperties[
+                        keyName as keyof typeof mapProperties
+                      ].colorStops.map((colors, index) => (
+                        <div className="flex flex-col">
+                          <div className={`bg-[${colors[1]}] w-9 h-4`}></div>
+                          <span className="text-xs flex justify-center">
+                            {colors[0]}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </fieldset>
@@ -399,7 +416,7 @@ export function BroadBandMap() {
       </Map>
     </>
   );
-} //<ControlPanel onChange={setMapStyle} />
+}
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -417,11 +434,12 @@ export type SpeedTestResults = {
 
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
+  const [running, setRunning] = useState(false);
 
   const config = {
     autoStart: true,
-    downloadApiUrl: "https://speed.cloudflare.com/__down",
-    uploadApiUrl: "https://speed.cloudflare.com/__up",
+    downloadApiUrl: "https://hawaii-speedtest.james-629.workers.dev/down",
+    uploadApiUrl: "https://hawaii-speedtest.james-629.workers.dev/up",
     measurements: [
       { type: "latency", numPackets: 1 }, // initial latency estimation
       { type: "download", bytes: 1e5, count: 1, bypassMinDuration: true }, // initial download estimation
@@ -463,6 +481,7 @@ export default function Home() {
     const engine = new SpeedTest(config as any);
 
     engine.onResultsChange = (results) => {
+      setRunning(true);
       const summary = engine.results.getSummary();
       const scores = engine.results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
@@ -476,6 +495,7 @@ export default function Home() {
       const finishedElement = document.createElement("div");
       finishedElement.id = "speedtest-finished";
       document.body.appendChild(finishedElement);
+      setRunning(false);
     };
 
     console.log("running");
@@ -488,21 +508,21 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex w-full">
-      <BroadBandMap />
-    </div>
-    // <main className="flex">
-
-    //   {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-    //     {speedTestResults && (
-    //       <div>
-    //         <h1>Speed Test Results:</h1>
-    //         <Results {...speedTestResults} />
-    //         <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
-    //         <p>Streaming Points: {speedTestResults.download}</p>
-    //       </div>
-    //     )}
-    //   </div> */}
-    // </main>
+    // <div className="flex w-full">
+    //   <BroadBandMap />
+    // </div>
+    <main className="flex">
+      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+        {speedTestResults && (
+          <div>
+            <h1>Speed Test Results:</h1>
+            <Results {...speedTestResults} />
+            <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
+            <p>Streaming Points: {speedTestResults.download}</p>
+            {running && <p>Running</p>}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
