@@ -42,6 +42,7 @@ type HoverInfo = {
   };
 };
 
+// Todo: break out into own component
 function BroadBandMap() {
   const [mapStyle, setMapStyle] = useState(null);
   const [allData, setAllData] = useState(null);
