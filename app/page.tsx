@@ -425,8 +425,8 @@ export default function Home() {
 
   const config = {
     autoStart: true,
-    downloadApiUrl: "https://hawaii-speedtest.james-629.workers.dev/down",
-    uploadApiUrl: "https://hawaii-speedtest.james-629.workers.dev/up",
+    downloadApiUrl: "https://api.hawaiispeedtest.com/down",
+    uploadApiUrl: "https://api.hawaiispeedtest.com/up",
     measurements: [
       { type: "latency", numPackets: 1 }, // initial latency estimation
       { type: "download", bytes: 1e5, count: 1, bypassMinDuration: true }, // initial download estimation
