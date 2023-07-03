@@ -21,8 +21,10 @@ import { useForm } from "react-hook-form";
 
 const MAPBOX_TOKEN =
   "pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ";
-const MAPBOX_STYLE = "mapbox://styles/jreese808/cljizyjed001201rg0kq7fif5";
-
+const MAPBOX_STYLE = "mapbox://styles/jreese808/cljna4uvl002k01r39caj94a8";
+// mapbox://styles/jreese808/cljna4uvl002k01r39caj94a8 //opacity highlight
+// mapbox://styles/jreese808/cljj27vw5001301rg5sqrddy1 //outline highlight
+// mapbox://styles/jreese808/cljj2xl1h000y01pyhy9xct0o //mix
 
 type HoverInfo = {
   properties: {
@@ -311,7 +313,7 @@ export function BroadBandMap() {
         property: mapLayer.feature,
         stops: mapLayer.colorStops,
       },
-      // "fill-opacity": 1,
+      "fill-opacity": .7,
     },
   };
 
@@ -325,6 +327,7 @@ export function BroadBandMap() {
         property: mapLayer.feature,
         stops: mapLayer.colorStops,
       },
+      'fill-outline-color': '#000000',
       // 'fill-opacity': 1,
 
     },
@@ -372,6 +375,9 @@ export function BroadBandMap() {
           <label className="text-base font-semibold text-gray-300">
             Tract: {hoverInfo?.properties.geoid}
           </label>
+          <div className="flex-row">
+            <div className="bg-[#800000]"></div><div className="bg-[#b81414]"></div><div className="bg-[#d13400]"></div><div className="bg-[#ffcd38]"></div><div className="bg-[#ffff33]"></div>
+          </div>
           <fieldset className="mt-4">
             <legend className="sr-only">Notification method</legend>
             {Object.keys(mapProperties).map((keyName, i) => (
@@ -490,16 +496,24 @@ export default function Home() {
       const summary = engine.results.getSummary();
       const scores = engine.results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
+
+      const runningNode = document.createTextNode("Running...");
+      const updateElement = document.getElementById("update");
+      updateElement?.replaceChild(runningNode, updateElement.childNodes[0]);
     };
 
     engine.onFinish = (results) => {
       const summary = results.getSummary();
       const scores = results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
-      console.log({ ...scores, ...summary, ...meta, ...ts, ...ua });
+      console.log({ ...speedTestResults });
       const finishedElement = document.createElement("div");
       finishedElement.id = "speedtest-finished";
       document.body.appendChild(finishedElement);
+
+      const finishedNode = document.createTextNode("Speed Test Results:");
+      const updateElement = document.getElementById("update");
+      updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
     };
 
     console.log("running");
@@ -512,21 +526,25 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex w-full">
-      <BroadBandMap />
-    </div>
-    // <main className="flex">
+    <div>
+      <div className="flex w-full">
+        <BroadBandMap />
+      </div>
+      <main className="flex">
 
-    //   {/* <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-    //     {speedTestResults && (
-    //       <div>
-    //         <h1>Speed Test Results:</h1>
-    //         <Results {...speedTestResults} />
-    //         <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
-    //         <p>Streaming Points: {speedTestResults.download}</p>
-    //       </div>
-    //     )}
-    //   </div> */}
-    // </main>
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+          {speedTestResults && (
+            <div className="divide-y divide-gray-800">
+              <div className="bg-gray-900 h-7">
+                <span id="update" className="text-xl">Loading...</span>
+              </div>
+              <Results {...speedTestResults} />
+              <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
+              <p>Streaming Points: {speedTestResults.download}</p>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
   );
 }
