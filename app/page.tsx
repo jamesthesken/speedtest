@@ -25,6 +25,7 @@ const MAPBOX_STYLE = "mapbox://styles/jreese808/cljna4uvl002k01r39caj94a8";
 // mapbox://styles/jreese808/cljna4uvl002k01r39caj94a8 //opacity highlight
 // mapbox://styles/jreese808/cljj27vw5001301rg5sqrddy1 //outline highlight
 // mapbox://styles/jreese808/cljj2xl1h000y01pyhy9xct0o //mix
+const description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Urna neque viverra justo nec ultrices dui. Posuere ac ut consequat semper viverra nam libero justo laoreet. Orci ac auctor augue mauris augue neque gravida. Tristique senectus et netus et malesuada fames ac turpis. Risus nullam eget felis eget nunc lobortis mattis aliquam. A cras semper auctor neque vitae tempus. Ullamcorper dignissim cras tincidunt lobortis. Nulla at volutpat diam ut venenatis. Odio euismod lacinia at quis risus sed vulputate odio. Duis tristique sollicitudin nibh sit."
 
 type HoverInfo = {
   properties: {
@@ -497,7 +498,7 @@ export default function Home() {
       const scores = engine.results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
 
-      const runningNode = document.createTextNode("Running...");
+      const runningNode = document.createTextNode("Running ");
       const updateElement = document.getElementById("update");
       updateElement?.replaceChild(runningNode, updateElement.childNodes[0]);
     };
@@ -511,6 +512,8 @@ export default function Home() {
       finishedElement.id = "speedtest-finished";
       document.body.appendChild(finishedElement);
 
+      const spinnerElement = document.getElementById("spinner");
+      spinnerElement?.remove();
       const finishedNode = document.createTextNode("Speed Test Results:");
       const updateElement = document.getElementById("update");
       updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
@@ -519,32 +522,41 @@ export default function Home() {
     console.log("running");
 
     engine.play();
+
+    setShowButton(!showButton);
   };
-
-  useEffect(() => {
-    runSpeedTest();
-  }, []);
-
+  
+  const [showButton, setShowButton] = useState(true);
+  
   return (
-    <div>
-      <div className="flex w-full">
-        <BroadBandMap />
-      </div>
+    <div className="flex items-center h-screen flex-col">
       <main className="flex">
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex py-48">
 
-        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+          {showButton && <div className=" flex flex-col items-center">
+            <p className="text-justify">{description}</p>
+            <div>
+              <button className="bg-white hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow" onClick={runSpeedTest}>Go</button>
+            </div>
+          </div>}
+
           {speedTestResults && (
             <div className="divide-y divide-gray-800">
-              <div className="bg-gray-900 h-7">
-                <span id="update" className="text-xl">Loading...</span>
+              <div className="ml-1 h-7">
+                <span id="update" className="text-xl">Loading </span>
+                <div className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                role="status" id="spinner"></div>
               </div>
               <Results {...speedTestResults} />
-              <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
-              <p>Streaming Points: {speedTestResults.download}</p>
+              {/* <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
+              <p>Streaming Points: {speedTestResults.download}</p> */}
             </div>
           )}
         </div>
       </main>
+      <div className="flex w-full static bottom-0">
+        <BroadBandMap />
+      </div>
     </div>
   );
 }

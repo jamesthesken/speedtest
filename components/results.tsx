@@ -165,6 +165,64 @@ export default function Results(speedTestResults: SpeedTestResults) {
 
         </div>
       </div>
+
+      <br></br>
+
+      <div className="mx-auto max-w-7xl">
+        <h1>Data</h1>
+        <div className="grid grid-rows-1 gap-px bg-white/5">
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Downloaded Latency</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.downLoadedLatency}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Downloaded Jitter</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.downLoadedJitter}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Uploaded Latency</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.upLoadedLatency}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Uploaded Jitter</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.upLoadedJitter}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Packet Loss</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.packetLoss}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Epoch</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.epoch}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+            <p>Date Time</p>
+            <p className="mt-2 flex items-baseline gap-x-2">
+              {speedTestResults?.dateTime}
+            </p>
+          </div>
+          {/* {Object.keys(speedTestResults)?.map((data, i) => (
+            <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-2">
+              <p>{data}</p>
+              <p className="mt-2 flex items-baseline gap-x-2">
+                {speedTestResults?.}
+              </p>
+            </div>
+          ))} */}
+        </div>
+      </div>
     </div>
   );
 }
