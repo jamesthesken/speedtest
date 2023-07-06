@@ -1,25 +1,11 @@
 "use client";
-//import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import SpeedTest from "@cloudflare/speedtest";
 import Results from "../components/results";
-
-//import * as React from 'react';
-//import {render} from 'react-dom';
-//import Map from 'react-map-gl';
-
-import * as React from "react";
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { render } from "react-dom";
-import Map, { Source, Layer, FillLayer } from "react-map-gl";
-import ControlPanel from "../components/control-panel";
+import Footer from "@/components/footer";
 import { InformationCircleIcon, BoltIcon } from "@heroicons/react/20/solid";
-
-// import { dataLayer } from "../components/map-style";
-import { updatePercentiles } from "../components/utils";
 import { BroadBandMap } from "@/components/BroadbandMap";
-import { useForm } from "react-hook-form";
-//<ControlPanel onChange={setMapStyle} />
+import Link from "next/link";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -33,12 +19,22 @@ export type SpeedTestResults = {
   packetLoss?: number | undefined;
   epoch: any;
   dateTime: any;
+  streaming: {
+    classificationName: string;
+    points: number;
+  };
+  rtc: {
+    classificationName: string;
+    points: number;
+  };
+  gaming: {
+    classificationName: string;
+    points: number;
+  };
 };
 
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
-  const description =
-    "Aloha! This website was developed in partnership with the County of Kauai and the Kauai Economic Development Board. Its purpose is to inform Hawaii residents about Digital Equity and explore broadband community data throughout the state.";
 
   const config = {
     autoStart: true,
@@ -238,17 +234,17 @@ export default function Home() {
             </div>
             <div className="ml-3 flex-1 md:flex md:justify-between">
               <p className="text-sm text-gray-200">
-                A new software update is available. See what’s new in version
-                2.0.4.
+                This map was created using U.S. Census Data, FCC Form 477, and
+                Ookla Internet Speedtest data
               </p>
               <p className="mt-3 text-sm md:ml-6 md:mt-0">
-                <a
-                  href="#"
-                  className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
+                <Link
+                  href="https://internetequity.uchicago.edu/resource/an-integrated-map-of-internet-access/"
+                  className="whitespace-nowrap font-medium text-blue-600 hover:text-blue-400"
                 >
-                  Details
+                  Learn more
                   <span aria-hidden="true"> &rarr;</span>
-                </a>
+                </Link>
               </p>
             </div>
           </div>
@@ -257,6 +253,7 @@ export default function Home() {
       <div className="flex w-full static bottom-0">
         <BroadBandMap />
       </div>
+      <Footer />
     </div>
   );
 }
