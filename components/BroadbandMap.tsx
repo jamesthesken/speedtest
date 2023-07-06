@@ -120,8 +120,8 @@ export function BroadBandMap() {
     },
     f_hawaiian: {
       feature: "f_hawaiian",
-      name: "% Hawaiian",
-      description: "Share of Population that is Hawaiian",
+      name: "% Native Hawaiian",
+      description: "Share of Population that is Native Hawaiian",
       colorStops: [
         [0, "#800000"],
         [25, "#b81414"],
