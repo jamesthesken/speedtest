@@ -339,28 +339,9 @@ export function BroadBandMap() {
   const { register, handleSubmit } = useForm();
 
   return (
-    <>
-      <Map
-        initialViewState={{
-          latitude: 20.6,
-          longitude: -157.2,
-          zoom: 5.5,
-        }}
-        {...settings}
-        style={{ width: "100%", height: 600 }}
-        mapStyle={MAPBOX_STYLE}
-        styleDiffing
-        mapboxAccessToken={MAPBOX_TOKEN}
-        interactiveLayerIds={["broadband"]}
-        onMouseMove={onHover}
-      >
-        <Source type="vector" url="jreese808.ce9n8i6v">
-          {/* id={"cljd92qex000801r4fnlh083d"} */}
-
-          <Layer {...dataLayer} />
-          <Layer {...highlightLayer} filter={filter} />
-        </Source>
-        <form className="md:absolute lg:top-0 bg-gray-700 h-full w-80 p-8">
+    <div className="flex flex-col-reverse lg:flex-row w-full">
+      <div className="basis-1/4">
+        <form className="bg-slate-800 h-full p-8">
           <label className="text-base font-semibold text-gray-300">
             Tract: {hoverInfo?.properties.geoid}
           </label>
@@ -372,10 +353,10 @@ export function BroadBandMap() {
             <div className="bg-[#ffff33]"></div>
           </div>
           <fieldset className="mt-4">
-            <legend className="sr-only">Notification method</legend>
+            <legend className="sr-only">Broadband data metrics</legend>
             {Object.keys(mapProperties).map((keyName, i) => (
               <div key={i} className="flex flex-col">
-                <div className="flex flex-row items-center">
+                <div className="flex flex-row items-center justify-between">
                   <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
                     <input
                       name="metrics-name"
@@ -399,7 +380,7 @@ export function BroadBandMap() {
                     />{" "}
                     {mapProperties[keyName as keyof typeof mapProperties].name}
                   </label>
-                  <label className="absolute right-4">
+                  <label className="">
                     {
                       hoverInfo?.properties[
                         mapProperties[keyName as keyof typeof mapProperties]
@@ -436,7 +417,30 @@ export function BroadBandMap() {
             ))}
           </fieldset>
         </form>
-      </Map>
-    </>
+      </div>
+      <div className="grow">
+        <Map
+          initialViewState={{
+            latitude: 20.6,
+            longitude: -157.2,
+            zoom: 5.5,
+          }}
+          {...settings}
+          style={{ width: "100%", height: 600 }}
+          mapStyle={MAPBOX_STYLE}
+          styleDiffing
+          mapboxAccessToken={MAPBOX_TOKEN}
+          interactiveLayerIds={["broadband"]}
+          onMouseMove={onHover}
+        >
+          <Source type="vector" url="jreese808.ce9n8i6v">
+            {/* id={"cljd92qex000801r4fnlh083d"} */}
+
+            <Layer {...dataLayer} />
+            <Layer {...highlightLayer} filter={filter} />
+          </Source>
+        </Map>
+      </div>
+    </div>
   );
 }

@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import { InformationCircleIcon, BoltIcon } from "@heroicons/react/20/solid";
 import { BroadBandMap } from "@/components/BroadbandMap";
 import Link from "next/link";
+import Contact from "@/components/contact";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -142,12 +143,12 @@ export default function Home() {
               broadband community data throughout the state.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <a
-                href="#"
+              <Link
+                href="#speedtest"
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Get started
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -164,17 +165,15 @@ export default function Home() {
           />
         </div>
       </div>
-      <main className="flex items-center flex-col">
+      <main className="flex items-center flex-col" id="speedtest">
         <div className="mx-auto max-w-2xl mt-32 sm:mt-24 lg:mt-36">
           <div className="text-center">
             <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-5xl">
               Test your connection
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-200">
-              Aloha! This website was developed in partnership with the County
-              of Kauai and the Kauai Economic Development Board. Its purpose is
-              to inform Hawaii residents about Digital Equity and explore
-              broadband community data throughout the state.
+              Click the button below to start an internet speed test. We do not
+              store any data when you run this speedtest.
             </p>
           </div>
         </div>
@@ -193,14 +192,6 @@ export default function Home() {
                   </span>
                 </button>
               </div>
-              {/* <div>
-                <button
-                  className="bg-white hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-                  onClick={runSpeedTest}
-                >
-                  Go
-                </button>
-              </div> */}
             </div>
           )}
 
@@ -217,13 +208,11 @@ export default function Home() {
                 ></div>
               </div>
               <Results {...speedTestResults} />
-              {/* <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
-              <p>Streaming Points: {speedTestResults.download}</p> */}
             </div>
           )}
         </div>
       </main>
-      <div className="mb-10">
+      <div className="mb-10 w-auto">
         <div className="rounded-md border-blue-300 border-2 p-4">
           <div className="flex">
             <div className="flex-shrink-0">
@@ -234,7 +223,8 @@ export default function Home() {
             </div>
             <div className="ml-3 flex-1 md:flex md:justify-between">
               <p className="text-sm text-gray-200">
-                This map was created using U.S. Census Data, FCC Form 477, and
+                This map was adapted from the University of Chicago's Internet
+                Equity Initiative using U.S. Census Data, FCC Form 477, and
                 Ookla Internet Speedtest data
               </p>
               <p className="mt-3 text-sm md:ml-6 md:mt-0">
@@ -250,9 +240,10 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex w-full static bottom-0">
+      <div className="flex w-full">
         <BroadBandMap />
       </div>
+      <Contact />
       <Footer />
     </div>
   );
