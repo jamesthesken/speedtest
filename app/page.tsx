@@ -1,409 +1,12 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import SpeedTest from "@cloudflare/speedtest";
 import Results from "../components/results";
-import Map, { Source, Layer, FillLayer } from "react-map-gl";
-import { useForm } from "react-hook-form";
-
-const MAPBOX_TOKEN =
-  "pk.eyJ1IjoianJlZXNlODA4IiwiYSI6ImNsajY0N3VkOTBoOXgzZHJxMzRvNWQ2ejMifQ.0BKSYohH8fYJMzi8K0zWsQ";
-const MAPBOX_STYLE = "mapbox://styles/jreese808/cljd92qex000801r4fnlh083d";
-
-type HoverInfo = {
-  properties: {
-    geoid: string;
-    d_mbps: number;
-    devices: number;
-    devices_per_cap: number;
-    f_asian: number;
-    f_ba: number;
-    f_black: number;
-    f_broadband: number;
-    f_computer: number;
-    f_hawaiian: number;
-    f_hispanic: number;
-    f_white: number;
-    fiber_100u_exists: number;
-    households: number;
-    lat_ms: number;
-    log_mhi: number;
-    max_dn: number;
-    max_up: number;
-    mhi: number;
-    n_dn10: number;
-    n_dn100: number;
-    n_dn250: number;
-    n_fiber_100u: number;
-    n_isp: number;
-    population: number;
-    tests: number;
-    tests_per_cap: number;
-    u_mbps: number;
-  };
-};
-
-// Todo: break out into own component
-function BroadBandMap() {
-  const [mapStyle, setMapStyle] = useState(null);
-  const [allData, setAllData] = useState(null);
-  const [hoverInfo, setHoverInfo] = useState<HoverInfo>();
-  const [settings, setSettings] = useState({
-    scrollZoom: true,
-    dragRotate: false,
-    keyboard: false,
-    doubleClickZoom: true,
-    touchZoomRotate: false,
-    touchPitch: false,
-    minZoom: 5.01,
-    maxZoom: 15,
-    maxBounds: [
-      [-167.2, 15.8], //Southwest
-      [-147.2, 25.6],
-    ], //Northeast
-  });
-
-  const mapProperties = {
-    f_broadband: {
-      feature: "f_broadband",
-      name: "Broadband Access",
-      description: "% of Households with Broadband Subscription",
-      colorStops: [
-        [60, "#800000"],
-        [70, "#b81414"],
-        [80, "#d13400"],
-        [90, "#ffcd38"],
-        [100, "#ffff33"],
-      ],
-    },
-    f_computer: {
-      feature: "f_computer",
-      name: "Computer in HH",
-      description: "% of Households with a Computer",
-      colorStops: [
-        [60, "#800000"],
-        [70, "#b81414"],
-        [80, "#d13400"],
-        [90, "#ffcd38"],
-        [100, "#ffff33"],
-      ],
-    },
-    f_ba: {
-      feature: "f_ba",
-      name: "% College Grads",
-      description: "% of Adult Population with a BA",
-      colorStops: [
-        [0, "#800000"],
-        [25, "#b81414"],
-        [50, "#d13400"],
-        [75, "#ffcd38"],
-        [100, "#ffff33"],
-      ],
-    },
-    f_hawaiian: {
-      feature: "f_hawaiian",
-      name: "% Hawaiian",
-      description: "Share of Population that is Hawaiian",
-      colorStops: [
-        [0, "#800000"],
-        [25, "#b81414"],
-        [50, "#d13400"],
-        [75, "#ffcd38"],
-        [100, "#ffff33"],
-      ],
-    },
-    log_mhi: {
-      feature: "log_mhi",
-      name: "Log Income",
-      description: "Log. of Median Household Income",
-      colorStops: [
-        [10, "#800000"],
-        [10.5, "#b81414"],
-        [11, "#d13400"],
-        [11.5, "#ffcd38"],
-        [12, "#ffff33"],
-      ],
-    },
-    n_isp: {
-      feature: "n_isp",
-      name: "# of ISPs",
-      description: "Number of ISPs",
-      colorStops: [
-        [0, "#800000"],
-        [1, "#b81414"],
-        [2, "#d13400"],
-        [3, "#ffcd38"],
-        [4, "#ffff33"],
-      ],
-    },
-    n_dn10: {
-      feature: "n_dn10",
-      name: "ISPs @ 10 Mbps",
-      description: "# of ISPs with > 10 Mbps Downstream",
-      colorStops: [
-        [0, "#800000"],
-        [1, "#b81414"],
-        [2, "#d13400"],
-        [3, "#ffcd38"],
-        [4, "#ffff33"],
-      ],
-    },
-    n_dn100: {
-      feature: "n_dn100",
-      name: "ISPs @ 100 Mbps",
-      description: "# of ISPs with > 100 Mbps Downstream",
-      colorStops: [
-        [0, "#800000"],
-        [1, "#b81414"],
-        [2, "#d13400"],
-        [3, "#ffcd38"],
-        [4, "#ffff33"],
-      ],
-    },
-    n_dn250: {
-      feature: "n_dn250",
-      name: "ISPs @ 250 Mbps",
-      description: "# of ISPs with > 250 Mbps Downstream",
-      colorStops: [
-        [0, "#800000"],
-        [1, "#b81414"],
-        [2, "#d13400"],
-        [3, "#ffcd38"],
-        [4, "#ffff33"],
-      ],
-    },
-    n_fiber_100u: {
-      feature: "n_fiber_100u",
-      name: "Fiber ISPs @ 100 Up",
-      description: "# Fiber Offerings with Upstream > 100 Mbps",
-      colorStops: [
-        [0, "#800000"],
-        [1, "#b81414"],
-        [2, "#d13400"],
-        [3, "#ffcd38"],
-        [4, "#ffff33"],
-      ],
-    },
-    fiber_100u_exists: {
-      feature: "fiber_100u_exists",
-      name: "Fiber Availability",
-      description: "Share of Blocks with Fiber",
-      colorStops: [
-        [0, "#800000"],
-        [0.25, "#b81414"],
-        [0.5, "#d13400"],
-        [0.75, "#ffcd38"],
-        [1.0, "#ffff33"],
-      ],
-    },
-    max_dn: {
-      feature: "max_dn",
-      name: "Max Adv. Downstream",
-      description: "Max Available Downstream Speed",
-      colorStops: [
-        [0, "#800000"],
-        [25, "#b81414"],
-        [100, "#d13400"],
-        [500, "#ffcd38"],
-        [1000, "#ffff33"],
-      ],
-    },
-    max_up: {
-      feature: "max_up",
-      name: "Max Adv. Upstream",
-      description: "Max Available Upstream Speed",
-      colorStops: [
-        [0, "#800000"],
-        [25, "#b81414"],
-        [100, "#d13400"],
-        [500, "#ffcd38"],
-        [1000, "#ffff33"],
-      ],
-    },
-    d_mbps: {
-      feature: "d_mbps",
-      name: "Avg. Download Rate",
-      description: "Average Fixed-Line Downstream Speed [Mbps]",
-      colorStops: [
-        [0, "#800000"],
-        [25, "#b81414"],
-        [100, "#d13400"],
-        [200, "#ffcd38"],
-        [300, "#ffff33"],
-      ],
-    },
-    u_mbps: {
-      feature: "u_mbps",
-      name: "Avg. Upload Rate",
-      description: "Average Fixed-Line Upstream Speed [Mbps]",
-      colorStops: [
-        [0, "#800000"],
-        [10, "#b81414"],
-        [30, "#d13400"],
-        [50, "#ffcd38"],
-        [150, "#ffff33"],
-      ],
-    },
-    lat_ms: {
-      feature: "lat_ms",
-      name: "Avg. Latency",
-      description: "Average Fixed-Line Latency [ms]",
-      colorStops: [
-        [0, "#800000"],
-        [10, "#b81414"],
-        [25, "#d13400"],
-        [50, "#ffcd38"],
-        [100, "#ffff33"],
-      ],
-    },
-    tests_per_cap: {
-      feature: "tests_per_cap",
-      name: "Tests per Capita",
-      description: "Ookla Tests, Per Capita",
-      colorStops: [
-        [0, "#800000"],
-        [0.01, "#b81414"],
-        [0.025, "#d13400"],
-        [0.05, "#ffcd38"],
-        [0.1, "#ffff33"],
-      ],
-    },
-    devices_per_cap: {
-      feature: "devices_per_cap",
-      name: "Devices per Capita",
-      description: "Devices Running Ookla Tests, Per Capita",
-      colorStops: [
-        [0, "#800000"],
-        [0.01, "#b81414"],
-        [0.02, "#d13400"],
-        [0.03, "#ffcd38"],
-        [0.05, "#ffff33"],
-      ],
-    },
-  };
-
-  const [mapLayer, setMapLayer] = useState(mapProperties["f_broadband"]);
-
-  useEffect(() => {
-    console.log(mapLayer);
-  }, [mapLayer]);
-
-  const dataLayer: FillLayer = {
-    id: "broadband",
-    type: "fill",
-    source: "mapbox",
-    "source-layer": "broadband",
-    paint: {
-      "fill-color": {
-        property: mapLayer.feature,
-        stops: mapLayer.colorStops,
-      },
-      "fill-opacity": 0.8,
-    },
-  };
-
-  const onHover = useCallback((event: any) => {
-    const {
-      features,
-      point: { x, y },
-    } = event;
-    const hoveredFeature = features && features[0];
-    // prettier-ignore
-    setHoverInfo(hoveredFeature?.toJSON());
-  }, []);
-
-  const { register, handleSubmit } = useForm();
-
-  return (
-    <>
-      <Map
-        initialViewState={{
-          latitude: 20.6,
-          longitude: -157.2,
-          zoom: 5.5,
-        }}
-        style={{ width: "100%", height: 600 }}
-        mapStyle={MAPBOX_STYLE}
-        styleDiffing
-        mapboxAccessToken={MAPBOX_TOKEN}
-        interactiveLayerIds={["broadband"]}
-        onMouseMove={onHover}
-      >
-        <Source id={"cljd92qex000801r4fnlh083d"} type="vector">
-          <Layer {...dataLayer} />
-        </Source>
-        <form className="absolute top-0 bg-gray-700 h-full w-80 p-8">
-          <label className="text-base font-semibold text-gray-300">
-            Metrics Tract: {hoverInfo?.properties.geoid}
-          </label>
-          <fieldset className="mt-4">
-            <legend className="sr-only">Notification method</legend>
-            {Object.keys(mapProperties).map((keyName, i) => (
-              <div key={i} className="flex flex-col">
-                <div className="flex flex-row items-center">
-                  <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
-                    <input
-                      name="metrics-name"
-                      type="radio"
-                      value={
-                        mapProperties[keyName as keyof typeof mapProperties]
-                          .feature
-                      }
-                      defaultChecked={
-                        mapProperties[keyName as keyof typeof mapProperties]
-                          .feature == "f_broadband"
-                      }
-                      onChange={(e) =>
-                        setMapLayer(
-                          mapProperties[
-                            e.target.value as keyof typeof mapProperties
-                          ]
-                        )
-                      }
-                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                    />{" "}
-                    {mapProperties[keyName as keyof typeof mapProperties].name}
-                  </label>
-                  <label>
-                    {
-                      hoverInfo?.properties[
-                        mapProperties[keyName as keyof typeof mapProperties]
-                          .feature as keyof typeof mapProperties
-                      ]
-                    }
-                  </label>
-                </div>
-                {mapLayer.feature ===
-                  mapProperties[keyName as keyof typeof mapProperties]
-                    .feature && (
-                  <div className="ml-4">
-                    <label>
-                      {
-                        mapProperties[keyName as keyof typeof mapProperties]
-                          .description
-                      }
-                    </label>
-                    <div className="flex flex-row">
-                      {mapProperties[
-                        keyName as keyof typeof mapProperties
-                      ].colorStops.map((colors, index) => (
-                        <div key={index} className="flex flex-col">
-                          <div className={`bg-[${colors[1]}] w-9 h-4`}></div>
-                          <span className="text-xs flex justify-center">
-                            {colors[0]}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </fieldset>
-        </form>
-      </Map>
-    </>
-  );
-}
+import Footer from "@/components/footer";
+import { InformationCircleIcon, BoltIcon } from "@heroicons/react/20/solid";
+import { BroadBandMap } from "@/components/BroadbandMap";
+import Link from "next/link";
+import Contact from "@/components/contact";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -417,6 +20,18 @@ export type SpeedTestResults = {
   packetLoss?: number | undefined;
   epoch: any;
   dateTime: any;
+  streaming: {
+    classificationName: string;
+    points: number;
+  };
+  rtc: {
+    classificationName: string;
+    points: number;
+  };
+  gaming: {
+    classificationName: string;
+    points: number;
+  };
 };
 
 export default function Home() {
@@ -472,44 +87,166 @@ export default function Home() {
       const summary = engine.results.getSummary();
       const scores = engine.results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
+
+      const runningNode = document.createTextNode("Running ");
+      const updateElement = document.getElementById("update");
+      updateElement?.replaceChild(runningNode, updateElement.childNodes[0]);
     };
 
     engine.onFinish = (results) => {
       const summary = results.getSummary();
       const scores = results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
-      console.log({ ...scores, ...summary, ...meta, ...ts, ...ua });
+      console.log({ ...speedTestResults });
       const finishedElement = document.createElement("div");
       finishedElement.id = "speedtest-finished";
       document.body.appendChild(finishedElement);
-      setRunning(false);
+
+      const spinnerElement = document.getElementById("spinner");
+      spinnerElement?.remove();
+      const finishedNode = document.createTextNode("Speed Test Results:");
+      const updateElement = document.getElementById("update");
+      updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
     };
 
     console.log("running");
 
     engine.play();
+
+    setShowButton(!showButton);
   };
 
-  useEffect(() => {
-    runSpeedTest();
-  }, []);
+  const [showButton, setShowButton] = useState(true);
 
   return (
-    // <div className="flex w-full">
-    //   <BroadBandMap />
-    // </div>
-    <main className="flex">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        {speedTestResults && (
-          <div>
-            <h1>Speed Test Results:</h1>
-            <Results {...speedTestResults} />
-            <pre>{JSON.stringify(speedTestResults, null, 2)}</pre>
-            <p>Streaming Points: {speedTestResults.download}</p>
-            {running && <p>Running</p>}
+    <div className="flex items-center h-screen flex-col">
+      <div className="relative isolate px-6 pt-14 lg:px-8">
+        <div
+          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-r from-green-200 to-green-500 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+          />
+        </div>
+        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-100 sm:text-6xl">
+              Hawaii Speed Test
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-gray-200">
+              Aloha! This website was developed in partnership with the County
+              of Kauai and the Kauai Economic Development Board. Its purpose is
+              to inform Hawaii residents about Digital Equity and explore
+              broadband community data throughout the state.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <Link
+                href="#speedtest"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Get started
+              </Link>
+            </div>
           </div>
-        )}
+        </div>
+        <div
+          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+          aria-hidden="true"
+        >
+          <div
+            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-r from-green-200 to-green-500 opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+          />
+        </div>
       </div>
-    </main>
+      <main className="flex items-center flex-col" id="speedtest">
+        <div className="mx-auto max-w-2xl mt-32 sm:mt-24 lg:mt-36">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-5xl">
+              Test your connection
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-gray-200">
+              Click the button below to start an internet speed test. We do not
+              store any data when you run this speedtest.
+            </p>
+          </div>
+        </div>
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-16 mb-48">
+          {showButton && (
+            <div className=" flex flex-col items-center">
+              <div className="relative group">
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                <button
+                  onClick={runSpeedTest}
+                  className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                >
+                  <span className="flex items-center space-x-5">
+                    <BoltIcon className="h-4 w-4 text-green-300" />
+                    <span className="pr-6 text-gray-100">Go</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {speedTestResults && (
+            <div className="divide-y divide-gray-800">
+              <div className="ml-1 h-7">
+                <span id="update" className="text-xl">
+                  Loading{" "}
+                </span>
+                <div
+                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status"
+                  id="spinner"
+                ></div>
+              </div>
+              <Results {...speedTestResults} />
+            </div>
+          )}
+        </div>
+      </main>
+      <div className="mb-10 w-auto">
+        <div className="rounded-md border-blue-300 border-2 p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <InformationCircleIcon
+                className="h-5 w-5 text-blue-400"
+                aria-hidden="true"
+              />
+            </div>
+            <div className="ml-3 flex-1 md:flex md:justify-between">
+              <p className="text-sm text-gray-200">
+                This map was adapted from the University of Chicago&apos;s
+                Internet Equity Initiative using U.S. Census Data, FCC Form 477,
+                and Ookla Internet Speedtest data
+              </p>
+              <p className="mt-3 text-sm md:ml-6 md:mt-0">
+                <Link
+                  href="https://internetequity.uchicago.edu/resource/an-integrated-map-of-internet-access/"
+                  className="whitespace-nowrap font-medium text-blue-600 hover:text-blue-400"
+                >
+                  Learn more
+                  <span aria-hidden="true"> &rarr;</span>
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex w-full">
+        <BroadBandMap />
+      </div>
+      <Contact />
+      <Footer />
+    </div>
   );
 }

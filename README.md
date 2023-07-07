@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## About
 
-## Getting Started
+![Screenshot of test results](./assets/screenshot.png)
 
-First, run the development server:
+This site was inspired by Digital Equity efforts throughout the State of Hawaii and across the US. For example, [Utah Internet Speed Test](https://business.utah.gov/broadband/speed-test/)
+
+The purpose of this tool:
+
+1. To to provide an easier interface to conduct speed testing surveys "on-the-ground" with Hawaii Residents.
+2. Explore broadband access data in Hawaii using Census, FCC, and Ookla speed testing data. We adapted code from The University of Chicago to include demographics relevant to Hawaii (e.g., Native Hawaiian Population). The original dataset can be found in this repo: [https://github.com/internet-equity/internet-access-map](https://github.com/internet-equity/internet-access-map)
+
+No data from the end-user is collected at this time.
+
+## How it works
+
+We utilize [Cloudflare's Speedtest module](https://github.com/cloudflare/speedtest) to measure internet connection. The module implements [PerformanceResourceTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming) to accomplish this.
+
+**This site is experimental: Results may differ from other speed test providers**
+
+## Run locally
+
+To run this on your own hardware:
 
 ```bash
+git clone https://github.com/jamesthesken/speedtest
+
+cd speedtest
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Learn more:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[https://broadband.hawaii.gov/acp/](https://broadband.hawaii.gov/acp/)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Get in touch
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Email us at `info@kauaitechgroup.com`
