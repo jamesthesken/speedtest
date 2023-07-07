@@ -40,8 +40,8 @@ export default function Home() {
 
   const config = {
     autoStart: true,
-    downloadApiUrl: "https://hawaiispeedtest.com/down",
-    uploadApiUrl: "https://hawaiispeedtest.com/up",
+    downloadApiUrl: "https://speed.cloudflare.com/__down",
+    uploadApiUrl: "https://speed.cloudflare.com/__up",
     measurements: [
       { type: "latency", numPackets: 1 }, // initial latency estimation
       { type: "download", bytes: 1e5, count: 1, bypassMinDuration: true }, // initial download estimation
