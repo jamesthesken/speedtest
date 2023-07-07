@@ -2,8 +2,6 @@
 //import { useEffect, useState } from "react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import Map, { Source, Layer, FillLayer } from "react-map-gl";
-
-import { useForm } from "react-hook-form";
 import { LngLat, LngLatBounds } from "mapbox-gl";
 
 const MAPBOX_TOKEN =
@@ -336,12 +334,10 @@ export function BroadBandMap() {
     [selectedCounty]
   );
 
-  const { register, handleSubmit } = useForm();
-
   return (
     <div className="flex flex-col-reverse lg:flex-row w-full">
       <div className="basis-1/4">
-        <form className="bg-slate-800 h-full p-8">
+        <form className="bg-slate-800 h-full p-8 pt-16 lg:p-8">
           <label className="text-base font-semibold text-gray-300">
             Tract: {hoverInfo?.properties.geoid}
           </label>
