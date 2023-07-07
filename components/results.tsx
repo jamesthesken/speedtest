@@ -220,40 +220,6 @@ export default function Results(speedTestResults: SpeedTestResults) {
               {speedTestResults?.dateTime}
             </p>
           </div>
-          <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
-            <p className="text-sm font-medium leading-6 text-gray-400">
-              Upload Speed
-            </p>
-            <p className="mt-2 flex items-baseline gap-x-2">
-              {speedTestResults?.upload ? (
-                <span className="text-4xl font-semibold tracking-tight text-white">
-                  {formatBytes(speedTestResults?.upload)}
-                </span>
-              ) : (
-                <span className="text-4xl font-semibold tracking-tight text-white">
-                  --
-                </span>
-              )}
-              <span className="text-sm text-gray-400">mbps</span>
-            </p>
-          </div>
-          <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
-            <p className="text-sm font-medium leading-6 text-gray-400">
-              Latency
-            </p>
-            <p className="mt-2 flex items-baseline gap-x-2">
-              {speedTestResults?.latency ? (
-                <span className="text-4xl font-semibold tracking-tight text-white">
-                  {formatBytes(speedTestResults?.latency)}
-                </span>
-              ) : (
-                <span className="text-4xl font-semibold tracking-tight text-white">
-                  --
-                </span>
-              )}
-              <span className="text-sm text-gray-400">mbps</span>
-            </p>
-          </div>
         </div>
       </div>
     </div>
