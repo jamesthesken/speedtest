@@ -36,11 +36,12 @@ export type SpeedTestResults = {
 
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
+  const [running, setRunning] = useState(false);
 
   const config = {
     autoStart: true,
-    downloadApiUrl: "https://speed.cloudflare.com/__down",
-    uploadApiUrl: "https://speed.cloudflare.com/__up",
+    downloadApiUrl: "https://hawaiispeedtest.com/down",
+    uploadApiUrl: "https://hawaiispeedtest.com/up",
     measurements: [
       { type: "latency", numPackets: 1 }, // initial latency estimation
       { type: "download", bytes: 1e5, count: 1, bypassMinDuration: true }, // initial download estimation
@@ -82,6 +83,7 @@ export default function Home() {
     const engine = new SpeedTest(config as any);
 
     engine.onResultsChange = (results) => {
+      setRunning(true);
       const summary = engine.results.getSummary();
       const scores = engine.results.getScores();
       setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
