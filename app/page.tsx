@@ -119,7 +119,7 @@ export default function Home() {
   const [showButton, setShowButton] = useState(true);
 
   return (
-    <div className="flex items-center h-screen flex-col">
+    <div className="flex items-center min-h-screen flex-col bg-slate-900">
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -200,11 +200,11 @@ export default function Home() {
           {speedTestResults && (
             <div className="divide-y divide-gray-800">
               <div className="ml-1 h-7">
-                <span id="update" className="text-xl">
+                <span id="update" className="text-xl text-gray-200">
                   Loading{" "}
                 </span>
                 <div
-                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-300"
                   role="status"
                   id="spinner"
                 ></div>

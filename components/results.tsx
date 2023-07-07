@@ -22,11 +22,11 @@ export default function Results(speedTestResults: SpeedTestResults) {
   }, [speedTestResults]);
 
   return (
-    <div className="bg-gray-900">
+    <div className="bg-slate-800">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-rows-1 gap-px bg-white/5">
-          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="grid grid-rows-1 gap-px bg-slate-800 ">
+          <div className="grid grid-cols-1 gap-px bg-slate-800 sm:grid-cols-2 lg:grid-cols-4 ">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8 ">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Download Speed
               </p>
@@ -43,7 +43,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">Mbps</span>
               </p>
             </div>
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Upload Speed
               </p>
@@ -60,7 +60,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">Mbps</span>
               </p>
             </div>
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Latency
               </p>
@@ -77,7 +77,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">ms</span>
               </p>
             </div>
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Jitter
               </p>
@@ -95,8 +95,8 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </p>
             </div>
           </div>
-          <div className="flex flex-row bg-slate-900 p-8">
-            <h1>Network Quality Scores</h1>
+          <div className="flex flex-row bg-slate-900 py-8">
+            <h1 className="text-gray-200">Network Quality Scores</h1>
             <div className="group relative w-max pl-8">
               <InformationCircleIcon className="text-gray-100 h-5 w-5" />
               <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8">
@@ -108,8 +108,8 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </span>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-px bg-white/5 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-px bg-slate-800 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
                 <p className="text-sm font-medium leading-6 text-gray-400">
                   {speedTestResults?.streaming ? (
@@ -134,7 +134,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 )}
               </p>
             </div>
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 {speedTestResults?.gaming ? (
                   <span>{speedTestResults?.gaming.points} points</span>
@@ -154,7 +154,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 )}
               </p>
             </div>
-            <div className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8">
+            <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 {speedTestResults?.rtc ? (
                   <span>{speedTestResults?.rtc.points} points</span>
@@ -182,41 +182,41 @@ export default function Results(speedTestResults: SpeedTestResults) {
       <br></br>
 
       <div className="mx-auto max-w-7xl">
-        <h1 className="pb-2">Details</h1>
-        <div className="grid grid-rows-1 divide-y-2 divide-gray-200 gap-px bg-white/5 p-4 items-center">
+        <h2 className="p-4 text-gray-200">Details</h2>
+        <div className="grid grid-rows-1 divide-y-2 divide-gray-200 gap-px bg-slate-800 p-4 items-center">
           <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-2">
-            <p>Downloaded Latency</p>
-            <p className="mt-2 flex gap-x-2">
+            <p className="text-gray-200">Downloaded Latency</p>
+            <p className="mt-2 flex gap-x-2 text-gray-200">
               {speedTestResults?.downLoadedLatency} ms
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px  sm:grid-cols-2 lg:grid-cols-2">
-            <p>Downloaded Jitter</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <p className="text-gray-200">Downloaded Jitter</p>
+            <p className="mt-2 flex items-baseline gap-x-2 text-gray-200">
               {speedTestResults?.downLoadedJitter} ms
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-2">
-            <p>Uploaded Latency</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <p className="text-gray-200">Uploaded Latency</p>
+            <p className="mt-2 flex items-baseline gap-x-2 text-gray-200">
               {speedTestResults?.upLoadedLatency} ms
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px  sm:grid-cols-2 lg:grid-cols-2">
-            <p>Uploaded Jitter</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <p className="text-gray-200">Uploaded Jitter</p>
+            <p className="mt-2 flex items-baseline gap-x-2 text-gray-200">
               {speedTestResults?.upLoadedJitter} ms
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-2">
-            <p>Packet Loss</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <p className="text-gray-200">Packet Loss</p>
+            <p className="mt-2 flex items-baseline gap-x-2 text-gray-200">
               {speedTestResults?.packetLoss}
             </p>
           </div>
           <div className="grid grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-2">
-            <p>Date</p>
-            <p className="mt-2 flex items-baseline gap-x-2">
+            <p className="text-gray-200">Date</p>
+            <p className="mt-2 flex items-baseline gap-x-2 text-gray-200">
               {speedTestResults?.dateTime}
             </p>
           </div>

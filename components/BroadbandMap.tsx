@@ -335,7 +335,7 @@ export function BroadBandMap() {
   );
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row w-full">
+    <div className="flex flex-col-reverse lg:flex-row w-full bg-slate-900">
       <div className="basis-1/4">
         <form className="bg-slate-800 h-full p-8 pt-16 lg:p-8">
           <label className="text-base font-semibold text-gray-300">
