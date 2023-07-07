@@ -223,9 +223,9 @@ export default function Home() {
             </div>
             <div className="ml-3 flex-1 md:flex md:justify-between">
               <p className="text-sm text-gray-200">
-                This map was adapted from the University of Chicago's Internet
-                Equity Initiative using U.S. Census Data, FCC Form 477, and
-                Ookla Internet Speedtest data
+                This map was adapted from the University of Chicago&apos;s
+                Internet Equity Initiative using U.S. Census Data, FCC Form 477,
+                and Ookla Internet Speedtest data
               </p>
               <p className="mt-3 text-sm md:ml-6 md:mt-0">
                 <Link
