@@ -7,6 +7,8 @@ import { InformationCircleIcon, BoltIcon , PauseCircleIcon, PlayCircleIcon, Arro
 import { BroadBandMap } from "@/components/BroadbandMap";
 import Link from "next/link";
 import Contact from "@/components/contact";
+// import { useGeolocation } from "react-use";
+import Geolocator from "@/components/geolocator";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -53,6 +55,15 @@ export default function Home() {
   const [ua, setUa] = useState<any>();
   const [meta, setMeta] = useState<any>();
   const [ts, setTs] = useState<any>();
+
+  const [location, setLocation] = useState();
+  const getLocation = (locationdata) => {
+    setLocation(locationdata);
+  }
+  const [locationUse, setLocationUse] = useState(false);
+  const locationToggle = () => {
+    setLocationUse(!locationUse);
+  };
 
   const runSpeedTest = async () => {
     setUa({ user_agent: window.navigator.userAgent });
@@ -111,6 +122,7 @@ export default function Home() {
     const finishedNode = document.createTextNode("Speed Test Results:");
     const updateElement = document.getElementById("update");
     updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
+    console.log(location);
   };
 
   return (
@@ -174,22 +186,35 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-16 mb-48">
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-8 mb-48">
           {showButton && (
-            <div className=" flex flex-col items-center">
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <button
-                  onClick={runSpeedTest}
-                  className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
-                >
-                  <span className="flex items-center space-x-5">
-                    <BoltIcon className="h-4 w-4 text-green-300" />
-                    <span className="pr-6 text-gray-100">Go</span>
-                  </span>
-                </button>
+            <div>
+              
+              <div className=" flex flex-col items-center">
+                <div className="mb-8">
+                  <div className="text-sm text-gray-200">
+                    <input type="checkbox" className="mr-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" onChange={locationToggle}/>
+                    Share my location
+                  </div>
+                </div>
+
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                  <button
+                    onClick={runSpeedTest}
+                    className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                  >
+                    <span className="flex items-center space-x-5">
+                      <BoltIcon className="h-4 w-4 text-green-300" />
+                      <span className="pr-6 text-gray-100">Go</span>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
+          )}
+          {locationUse && (
+            <Geolocator getLocation={getLocation}/>
           )}
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
