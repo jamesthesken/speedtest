@@ -9,6 +9,7 @@ import Link from "next/link";
 import Contact from "@/components/contact";
 // import { useGeolocation } from "react-use";
 import Geolocator from "@/components/geolocator";
+import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -56,10 +57,7 @@ export default function Home() {
   const [meta, setMeta] = useState<any>();
   const [ts, setTs] = useState<any>();
 
-  const [location, setLocation] = useState();
-  const getLocation = (locationdata) => {
-    setLocation(locationdata);
-  }
+  const [location, setLocation] = useState<GeoLocationSensorState>();
   const [locationUse, setLocationUse] = useState(false);
   const locationToggle = () => {
     setLocationUse(!locationUse);
@@ -214,7 +212,7 @@ export default function Home() {
             </div>
           )}
           {locationUse && (
-            <Geolocator getLocation={getLocation}/>
+            <Geolocator setLocation={setLocation}/>
           )}
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
