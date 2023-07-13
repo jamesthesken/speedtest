@@ -7,9 +7,9 @@ import { InformationCircleIcon, BoltIcon , PauseCircleIcon, PlayCircleIcon, Arro
 import { BroadBandMap } from "@/components/BroadbandMap";
 import Link from "next/link";
 import Contact from "@/components/contact";
-// import { useGeolocation } from "react-use";
 import Geolocator from "@/components/geolocator";
-import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
+import { GeoLocationSensorState } from "react-use/lib/useGeolocation"; //XrhZTd0OUJMk2VqB
+import { supabase } from '../api'
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -109,18 +109,32 @@ export default function Home() {
   engine.onResultsChange = (results) => {
     const summary = engine.results.getSummary();
     const scores = engine.results.getScores();
-    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
+    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua, });
   };
 
   engine.onFinish = (results) => {
     const summary = results.getSummary();
     const scores = results.getScores();
-    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
+    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua, });
     setResumeButton(false);
     const finishedNode = document.createTextNode("Speed Test Results:");
     const updateElement = document.getElementById("update");
     updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
+    console.log(speedTestResults);
     console.log(location);
+    saveData();
+  };
+
+  const saveData = async () => {
+    console.log('saving data')
+    const { data, error } = await supabase
+      .from('speedtest')
+      .insert({
+        latitude: location?.latitude, longitude: location?.longitude,
+        download: speedTestResults?.download, upload: speedTestResults?.upload, latency: speedTestResults?.latency,
+        rtc: speedTestResults?.rtc,
+      })
+      console.log(data, error);
   };
 
   return (
