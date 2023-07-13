@@ -57,12 +57,6 @@ export default function Home() {
   const [meta, setMeta] = useState<any>();
   const [ts, setTs] = useState<any>();
 
-  const [location, setLocation] = useState<GeoLocationSensorState>();
-  const [locationUse, setLocationUse] = useState(false);
-  const locationToggle = () => {
-    setLocationUse(!locationUse);
-  };
-
   const runSpeedTest = async () => {
     setUa({ user_agent: window.navigator.userAgent });
     setMeta((await safeFetch("https://speed.cloudflare.com/meta")).json);
@@ -94,6 +88,8 @@ export default function Home() {
 
   engine.onRunningChange = (results) => {
     if(engine.isRunning){
+      setIsFinished(false);
+      setDataSaved(false);
       setPauseButton(true);
       setResumeButton(false);
       setShowSpinner(true);
@@ -110,6 +106,7 @@ export default function Home() {
     const summary = engine.results.getSummary();
     const scores = engine.results.getScores();
     setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua, });
+
   };
 
   engine.onFinish = (results) => {
@@ -120,10 +117,12 @@ export default function Home() {
     const finishedNode = document.createTextNode("Speed Test Results:");
     const updateElement = document.getElementById("update");
     updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
-    console.log(speedTestResults);
-    console.log(location);
-    saveData();
+    setIsFinished(true);
   };
+
+  const [location, setLocation] = useState<GeoLocationSensorState>();
+  const [isFinished, setIsFinished] = useState(false);
+  const [dataSaved, setDataSaved] = useState(false);
 
   const saveData = async () => {
     console.log('saving data')
@@ -135,6 +134,14 @@ export default function Home() {
         rtc: speedTestResults?.rtc,
       })
       console.log(data, error);
+  };
+  
+
+  if(!dataSaved && isFinished && location?.latitude!=null && location?.longitude!=null && !location?.loading){
+    saveData();
+    setDataSaved(true);
+    console.log(speedTestResults);
+    console.log(location);
   };
 
   return (
@@ -200,16 +207,8 @@ export default function Home() {
         </div>
         <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-8 mb-48">
           {showButton && (
-            <div>
-              
+            <div>  
               <div className=" flex flex-col items-center">
-                <div className="mb-8">
-                  <div className="text-sm text-gray-200">
-                    <input type="checkbox" className="mr-4 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" onChange={locationToggle}/>
-                    Share my location
-                  </div>
-                </div>
-
                 <div className="relative group">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                   <button
@@ -225,11 +224,9 @@ export default function Home() {
               </div>
             </div>
           )}
-          {locationUse && (
-            <Geolocator setLocation={setLocation}/>
-          )}
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
+              <Geolocator setLocation={setLocation}/>
               <div className=" flex flex-col items-center">
                 <div className="relative group">
                   {pauseButton && (
