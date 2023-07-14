@@ -1,7 +1,7 @@
 "use-client";
 import { useEffect } from "react";
 import { SpeedTestResults } from "@/app/page";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon, TvIcon, RocketLaunchIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 
 function formatBytes(bits: number, decimals = 2) {
   if (!+bits) return "0 Bits";
@@ -99,7 +99,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
             <h1 className="text-gray-200">Network Quality Scores</h1>
             <div className="group relative w-max pl-8">
               <InformationCircleIcon className="text-gray-100 h-5 w-5" />
-              <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8">
+              <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                 Aggregated Internet Measurement (AIM) helps you understand your
                 Internet quality to identify scenarios that your Internet
                 connection is good or bad for. Typically, an Internet speed test
@@ -118,9 +118,14 @@ export default function Results(speedTestResults: SpeedTestResults) {
                     <span>--</span>
                   )}
                 </p>
-                <div></div>
+                <div className="group relative w-max">
+                  <TvIcon className="text-gray-100 h-5 w-5" />
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                    Streaming scores are measured using your network latency, packet loss, download speed, and loaded latency.
+                    The aggregated score of these measurements must be above: 15 for poor, 20 for average, 40 for good, and 60 for great.
+                  </span>
+                </div>
               </div>
-
               <p className="mt-2 flex items-baseline gap-x-2">
                 {speedTestResults?.streaming ? (
                   <span className="text-2xl font-semibold tracking-tight text-white">
@@ -135,13 +140,22 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </p>
             </div>
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
-              <p className="text-sm font-medium leading-6 text-gray-400">
-                {speedTestResults?.gaming ? (
-                  <span>{speedTestResults?.gaming.points} points</span>
-                ) : (
-                  <span>--</span>
-                )}
-              </p>
+              <div className="flex flex-row justify-between">
+                <p className="text-sm font-medium leading-6 text-gray-400">
+                  {speedTestResults?.gaming ? (
+                    <span>{speedTestResults?.gaming.points} points</span>
+                  ) : (
+                    <span>--</span>
+                  )}
+                </p>
+                <div className="group relative w-max">
+                  <RocketLaunchIcon className="text-gray-100 h-5 w-5" />
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                    Gaming scores are measured using your network latency, packet loss, and loaded latency.
+                    The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 30 for great.
+                  </span>
+                </div>
+              </div>
               <p className="mt-2 flex items-baseline gap-x-2">
                 {speedTestResults?.gaming ? (
                   <span className="text-2xl font-semibold tracking-tight text-white">
@@ -155,13 +169,22 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </p>
             </div>
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
-              <p className="text-sm font-medium leading-6 text-gray-400">
-                {speedTestResults?.rtc ? (
-                  <span>{speedTestResults?.rtc.points} points</span>
-                ) : (
-                  <span>--</span>
-                )}
-              </p>
+              <div className="flex flex-row justify-between">
+                <p className="text-sm font-medium leading-6 text-gray-400">
+                  {speedTestResults?.rtc ? (
+                    <span>{speedTestResults?.rtc.points} points</span>
+                  ) : (
+                    <span>--</span>
+                  )}
+                </p>
+                <div className="group relative w-max">
+                  <VideoCameraIcon className="text-gray-100 h-5 w-5" />
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                    Real time communications scores are measured using your network latency, jitter, packet loss, and loaded latency.
+                    The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 40 for great.
+                  </span>
+                </div>
+              </div>
               <p className="mt-2 flex items-baseline gap-x-2">
                 {speedTestResults?.rtc ? (
                   <span className="text-2xl font-semibold tracking-tight text-white">

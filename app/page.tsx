@@ -8,7 +8,7 @@ import { BroadBandMap } from "@/components/BroadbandMap";
 import Link from "next/link";
 import Contact from "@/components/contact";
 import Geolocator from "@/components/geolocator";
-import { GeoLocationSensorState } from "react-use/lib/useGeolocation"; //XrhZTd0OUJMk2VqB
+import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
 import { supabase } from '../api'
 
 export type SpeedTestResults = {
@@ -227,38 +227,40 @@ export default function Home() {
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
               <Geolocator setLocation={setLocation}/>
-              <div className=" flex flex-col items-center">
-                <div className="relative group">
-                  {pauseButton && (
-                    <div>
-                      <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                      <button
-                        onClick={pause}
-                        className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
-                      >
-                        <span className="flex items-center space-x-5">
-                          <PauseCircleIcon className="h-4 w-4 text-yellow-300" />
-                          <span className="pr-6 text-gray-100">Pause</span>
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                  {resumeButton && (
-                    <div>
-                      <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                      <button
-                        onClick={resume}
-                        className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
-                      >
-                        <span className="flex items-center space-x-5">
-                          <PlayCircleIcon className="h-4 w-4 text-green-300" />
-                          <span className="pr-6 text-gray-100">Resume</span>
-                        </span>
-                      </button>
-                    </div>
-                  )}
+              {!isFinished && (
+                <div className=" flex flex-col items-center">
+                  <div className="relative group">
+                    {pauseButton && (
+                      <div>
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <button
+                          onClick={pause}
+                          className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                        >
+                          <span className="flex items-center space-x-5">
+                            <PauseCircleIcon className="h-4 w-4 text-yellow-300" />
+                            <span className="pr-6 text-gray-100">Pause</span>
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                    {resumeButton && (
+                      <div>
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <button
+                          onClick={resume}
+                          className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                        >
+                          <span className="flex items-center space-x-5">
+                            <PlayCircleIcon className="h-4 w-4 text-green-300" />
+                            <span className="pr-6 text-gray-100">Resume</span>
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
               <div className=" flex flex-col items-center">
                 <div className="relative group">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
