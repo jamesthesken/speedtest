@@ -1,12 +1,22 @@
 "use client";
-import { useState } from "react";
-import SpeedTest from "@cloudflare/speedtest";
+import { useState, useEffect } from "react";
+import engine from "@/utils/speedtest";
 import Results from "../components/results";
 import Footer from "@/components/footer";
-import { InformationCircleIcon, BoltIcon } from "@heroicons/react/20/solid";
+import {
+  InformationCircleIcon,
+  BoltIcon,
+  PauseCircleIcon,
+  PlayCircleIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/20/solid";
 import { BroadBandMap } from "@/components/BroadbandMap";
 import Link from "next/link";
 import Contact from "@/components/contact";
+import Geolocator from "@/components/geolocator";
+import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
+import { supabase } from "../api";
+import Modal from "@/components/modal";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -36,30 +46,8 @@ export type SpeedTestResults = {
 
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
-  const [running, setRunning] = useState(false);
-
-  const config = {
-    autoStart: true,
-    downloadApiUrl: "https://speed.cloudflare.com/__down",
-    uploadApiUrl: "https://speed.cloudflare.com/__up",
-    measurements: [
-      { type: "latency", numPackets: 1 }, // initial latency estimation
-      { type: "download", bytes: 1e5, count: 1, bypassMinDuration: true }, // initial download estimation
-      { type: "latency", numPackets: 20 },
-      { type: "download", bytes: 1e5, count: 9 },
-      { type: "download", bytes: 1e6, count: 8 },
-      { type: "upload", bytes: 1e5, count: 8 },
-      { type: "packetLoss", numPackets: 1e3, responsesWaitTime: 3000 },
-      { type: "upload", bytes: 1e6, count: 6 },
-      { type: "download", bytes: 1e7, count: 6 },
-      { type: "upload", bytes: 1e7, count: 4 },
-      { type: "download", bytes: 2.5e7, count: 4 },
-      { type: "upload", bytes: 2.5e7, count: 4 },
-      { type: "download", bytes: 1e8, count: 3 },
-      { type: "upload", bytes: 5e7, count: 3 },
-      { type: "download", bytes: 2.5e8, count: 2 },
-    ],
-  };
+  const [showButton, setShowButton] = useState(true);
+  const [showSpinner, setShowSpinner] = useState(true);
 
   const safeFetch = async (url: any, options = {}) => {
     try {
@@ -72,51 +60,102 @@ export default function Home() {
     }
   };
 
+  const [ua, setUa] = useState<any>();
+  const [meta, setMeta] = useState<any>();
+  const [ts, setTs] = useState<any>();
+
   const runSpeedTest = async () => {
-    const ua = { user_agent: window.navigator.userAgent };
-    const meta = (await safeFetch("https://speed.cloudflare.com/meta")).json;
+    setUa({ user_agent: window.navigator.userAgent });
+    setMeta((await safeFetch("https://speed.cloudflare.com/meta")).json);
     const { utc_datetime, unixtime } = (
       await safeFetch("https://worldtimeapi.org/api/timezone/Etc/UTC")
     ).json;
-    const ts = { epoch: unixtime, dateTime: utc_datetime };
-
-    const engine = new SpeedTest(config as any);
-
-    engine.onResultsChange = (results) => {
-      setRunning(true);
-      const summary = engine.results.getSummary();
-      const scores = engine.results.getScores();
-      setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
-
-      const runningNode = document.createTextNode("Running ");
-      const updateElement = document.getElementById("update");
-      updateElement?.replaceChild(runningNode, updateElement.childNodes[0]);
-    };
-
-    engine.onFinish = (results) => {
-      const summary = results.getSummary();
-      const scores = results.getScores();
-      setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
-      console.log({ ...speedTestResults });
-      const finishedElement = document.createElement("div");
-      finishedElement.id = "speedtest-finished";
-      document.body.appendChild(finishedElement);
-
-      const spinnerElement = document.getElementById("spinner");
-      spinnerElement?.remove();
-      const finishedNode = document.createTextNode("Speed Test Results:");
-      const updateElement = document.getElementById("update");
-      updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
-    };
-
-    console.log("running");
-
+    setTs({ epoch: unixtime, dateTime: utc_datetime });
     engine.play();
-
-    setShowButton(!showButton);
+    setShowButton(false);
   };
 
-  const [showButton, setShowButton] = useState(true);
+  const [pauseButton, setPauseButton] = useState(true);
+  const [resumeButton, setResumeButton] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const pause = () => {
+    engine.pause();
+    setResumeButton(true);
+    const finishedNode = document.createTextNode("Paused");
+    const updateElement = document.getElementById("update");
+    updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
+  };
+  const resume = () => {
+    engine.play();
+  };
+
+  const restart = () => {
+    engine.restart();
+  };
+
+  engine.onRunningChange = (results) => {
+    if (engine.isRunning) {
+      setIsFinished(false);
+      setDataSaved(false);
+      setPauseButton(true);
+      setResumeButton(false);
+      setShowSpinner(true);
+      const finishedNode = document.createTextNode("Running ");
+      const updateElement = document.getElementById("update");
+      updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
+    } else {
+      setShowSpinner(false);
+      setPauseButton(false);
+    }
+  };
+
+  engine.onResultsChange = (results) => {
+    const summary = engine.results.getSummary();
+    const scores = engine.results.getScores();
+    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
+  };
+
+  engine.onFinish = (results) => {
+    const summary = results.getSummary();
+    const scores = results.getScores();
+    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
+    setResumeButton(false);
+    const finishedNode = document.createTextNode("Speed Test Results:");
+    const updateElement = document.getElementById("update");
+    updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
+    setIsFinished(true);
+  };
+
+  const [location, setLocation] = useState<GeoLocationSensorState>();
+  const [isFinished, setIsFinished] = useState(false);
+  const [dataSaved, setDataSaved] = useState(false);
+
+  const saveData = async () => {
+    console.log("saving data");
+    const { data, error } = await supabase.from("speedtest").insert({
+      latitude: location?.latitude,
+      longitude: location?.longitude,
+      download: speedTestResults?.download,
+      upload: speedTestResults?.upload,
+      latency: speedTestResults?.latency,
+      rtc: speedTestResults?.rtc,
+    });
+    console.log(data, error);
+  };
+
+  if (
+    !dataSaved &&
+    isFinished &&
+    location?.latitude != null &&
+    location?.longitude != null &&
+    !location?.loading
+  ) {
+    saveData();
+    setDataSaved(true);
+    console.log(speedTestResults);
+    console.log(location);
+  }
 
   return (
     <div className="flex items-center min-h-screen flex-col bg-slate-900">
@@ -174,40 +213,103 @@ export default function Home() {
               Test your connection
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-200">
-              Click the button below to start an internet speed test. We do not
-              store any data when you run this speedtest.
+              Click the button below to start an internet speed test. By running
+              this test you agree to our{" "}
+              <button
+                className="underline underline-offset-2 text-blue-500 hover:text-blue-300"
+                onClick={() => setOpen(true)}
+              >
+                Privacy Policy
+              </button>
             </p>
           </div>
         </div>
-        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-16 mb-48">
+        <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-8 mb-48">
           {showButton && (
-            <div className=" flex flex-col items-center">
-              <div className="relative group">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                <button
-                  onClick={runSpeedTest}
-                  className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
-                >
-                  <span className="flex items-center space-x-5">
-                    <BoltIcon className="h-4 w-4 text-green-300" />
-                    <span className="pr-6 text-gray-100">Go</span>
-                  </span>
-                </button>
+            <div>
+              <div className=" flex flex-col items-center">
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                  <button
+                    onClick={runSpeedTest}
+                    className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                  >
+                    <span className="flex items-center space-x-5">
+                      <BoltIcon className="h-4 w-4 text-green-300" />
+                      <span className="pr-6 text-gray-100">Go</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {!showButton && (
+            <div className="flex flex-row justify-center space-x-10 pb-5 ">
+              <Geolocator setLocation={setLocation} />
+              {!isFinished && (
+                <div className=" flex flex-col items-center">
+                  <div className="relative group">
+                    {pauseButton && (
+                      <div>
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <button
+                          onClick={pause}
+                          className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                        >
+                          <span className="flex items-center space-x-5">
+                            <PauseCircleIcon className="h-4 w-4 text-yellow-300" />
+                            <span className="pr-6 text-gray-100">Pause</span>
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                    {resumeButton && (
+                      <div>
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                        <button
+                          onClick={resume}
+                          className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                        >
+                          <span className="flex items-center space-x-5">
+                            <PlayCircleIcon className="h-4 w-4 text-green-300" />
+                            <span className="pr-6 text-gray-100">Resume</span>
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              <div className=" flex flex-col items-center">
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-orange-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                  <button
+                    onClick={restart}
+                    className="relative px-7 py-4 bg-black rounded-lg leading-none flex items-center divide-x divide-gray-600"
+                  >
+                    <span className="flex items-center space-x-5">
+                      <ArrowPathIcon className="h-4 w-4 text-red-300" />
+                      <span className="pr-6 text-gray-100">Restart</span>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
 
           {speedTestResults && (
             <div className="divide-y divide-gray-800">
-              <div className="ml-1 h-7">
+              <div className="ml-0 h-7 mb-1">
                 <span id="update" className="text-xl text-gray-200">
-                  Loading{" "}
+                  Running{" "}
                 </span>
-                <div
-                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-300"
-                  role="status"
-                  id="spinner"
-                ></div>
+                {showSpinner && (
+                  <div
+                    className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-300"
+                    role="status"
+                    id="spinner"
+                  ></div>
+                )}
               </div>
               <Results {...speedTestResults} />
             </div>
@@ -245,6 +347,7 @@ export default function Home() {
       <div className="flex w-full">
         <BroadBandMap />
       </div>
+      <Modal open={open} setOpen={setOpen} />
       <Contact />
       <Footer />
     </div>
