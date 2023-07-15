@@ -1,15 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
-import engine from "@/utils/speedtest"
+import engine from "@/utils/speedtest";
 import Results from "../components/results";
 import Footer from "@/components/footer";
-import { InformationCircleIcon, BoltIcon , PauseCircleIcon, PlayCircleIcon, ArrowPathIcon } from "@heroicons/react/20/solid";
+import {
+  InformationCircleIcon,
+  BoltIcon,
+  PauseCircleIcon,
+  PlayCircleIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/20/solid";
 import { BroadBandMap } from "@/components/BroadbandMap";
 import Link from "next/link";
 import Contact from "@/components/contact";
 import Geolocator from "@/components/geolocator";
 import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
-import { supabase } from '../api'
+import { supabase } from "../api";
+import Modal from "@/components/modal";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -70,7 +77,8 @@ export default function Home() {
 
   const [pauseButton, setPauseButton] = useState(true);
   const [resumeButton, setResumeButton] = useState(false);
- 
+  const [open, setOpen] = useState(false);
+
   const pause = () => {
     engine.pause();
     setResumeButton(true);
@@ -87,7 +95,7 @@ export default function Home() {
   };
 
   engine.onRunningChange = (results) => {
-    if(engine.isRunning){
+    if (engine.isRunning) {
       setIsFinished(false);
       setDataSaved(false);
       setPauseButton(true);
@@ -97,7 +105,7 @@ export default function Home() {
       const updateElement = document.getElementById("update");
       updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
     } else {
-      setShowSpinner(false); 
+      setShowSpinner(false);
       setPauseButton(false);
     }
   };
@@ -105,14 +113,13 @@ export default function Home() {
   engine.onResultsChange = (results) => {
     const summary = engine.results.getSummary();
     const scores = engine.results.getScores();
-    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua, });
-
+    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
   };
 
   engine.onFinish = (results) => {
     const summary = results.getSummary();
     const scores = results.getScores();
-    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua, });
+    setSpeedTestResults({ ...scores, ...summary, ...meta, ...ts, ...ua });
     setResumeButton(false);
     const finishedNode = document.createTextNode("Speed Test Results:");
     const updateElement = document.getElementById("update");
@@ -125,24 +132,30 @@ export default function Home() {
   const [dataSaved, setDataSaved] = useState(false);
 
   const saveData = async () => {
-    console.log('saving data')
-    const { data, error } = await supabase
-      .from('speedtest')
-      .insert({
-        latitude: location?.latitude, longitude: location?.longitude,
-        download: speedTestResults?.download, upload: speedTestResults?.upload, latency: speedTestResults?.latency,
-        rtc: speedTestResults?.rtc,
-      })
-      console.log(data, error);
+    console.log("saving data");
+    const { data, error } = await supabase.from("speedtest").insert({
+      latitude: location?.latitude,
+      longitude: location?.longitude,
+      download: speedTestResults?.download,
+      upload: speedTestResults?.upload,
+      latency: speedTestResults?.latency,
+      rtc: speedTestResults?.rtc,
+    });
+    console.log(data, error);
   };
-  
 
-  if(!dataSaved && isFinished && location?.latitude!=null && location?.longitude!=null && !location?.loading){
+  if (
+    !dataSaved &&
+    isFinished &&
+    location?.latitude != null &&
+    location?.longitude != null &&
+    !location?.loading
+  ) {
     saveData();
     setDataSaved(true);
     console.log(speedTestResults);
     console.log(location);
-  };
+  }
 
   return (
     <div className="flex items-center min-h-screen flex-col bg-slate-900">
@@ -200,14 +213,20 @@ export default function Home() {
               Test your connection
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-200">
-              Click the button below to start an internet speed test. We do not
-              store any data when you run this speedtest.
+              Click the button below to start an internet speed test. By running
+              this test you agree to our{" "}
+              <button
+                className="underline underline-offset-2 text-blue-500 hover:text-blue-300"
+                onClick={() => setOpen(true)}
+              >
+                Privacy Policy
+              </button>
             </p>
           </div>
         </div>
         <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-8 mb-48">
           {showButton && (
-            <div>  
+            <div>
               <div className=" flex flex-col items-center">
                 <div className="relative group">
                   <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-lime-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
@@ -226,7 +245,7 @@ export default function Home() {
           )}
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
-              <Geolocator setLocation={setLocation}/>
+              <Geolocator setLocation={setLocation} />
               {!isFinished && (
                 <div className=" flex flex-col items-center">
                   <div className="relative group">
@@ -285,11 +304,11 @@ export default function Home() {
                   Running{" "}
                 </span>
                 {showSpinner && (
-                <div
-                  className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-300"
-                  role="status"
-                  id="spinner"
-                ></div>
+                  <div
+                    className="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite] text-gray-300"
+                    role="status"
+                    id="spinner"
+                  ></div>
                 )}
               </div>
               <Results {...speedTestResults} />
@@ -328,6 +347,7 @@ export default function Home() {
       <div className="flex w-full">
         <BroadBandMap />
       </div>
+      <Modal open={open} setOpen={setOpen} />
       <Contact />
       <Footer />
     </div>
