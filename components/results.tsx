@@ -98,8 +98,8 @@ export default function Results(speedTestResults: SpeedTestResults) {
           <div className="flex flex-row bg-slate-900 py-8">
             <h1 className="text-gray-200">Network Quality Scores</h1>
             <div className="group relative w-max pl-8">
-              <InformationCircleIcon className="text-gray-100 h-5 w-5" />
-              <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 bottom-7 -end-36 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+              <InformationCircleIcon className="text-gray-100 h-5 w-5" /> 
+              <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-7 -end-36 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                 Aggregated Internet Measurement (AIM) helps you understand your
                 Internet quality to identify scenarios that your Internet
                 connection is good or bad for. Typically, an Internet speed test
@@ -120,7 +120,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <TvIcon className="text-gray-100 h-5 w-5" />
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-8 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-7 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Streaming scores are measured using your network latency, packet loss, download speed, and loaded latency.
                     The aggregated score of these measurements must be above: 15 for poor, 20 for average, 40 for good, and 60 for great.
                   </span>
@@ -150,7 +150,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <RocketLaunchIcon className="text-gray-100 h-5 w-5" />
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-8 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-7 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Gaming scores are measured using your network latency, packet loss, and loaded latency.
                     The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 30 for great.
                   </span>
@@ -179,7 +179,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <VideoCameraIcon className="text-gray-100 h-5 w-5" /> 
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-8 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-7 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Real time communications scores are measured using your network latency, jitter, packet loss, and loaded latency.
                     The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 40 for great.
                   </span>
