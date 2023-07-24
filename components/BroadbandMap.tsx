@@ -353,7 +353,7 @@ export function BroadBandMap() {
             {Object.keys(mapProperties).map((keyName, i) => (
               <div key={i} className="flex flex-col">
                 <div className="flex flex-row items-center justify-between">
-                  <label className="ml-2 block text-sm font-medium leading-6 text-gray-300">
+                  <label className="ml-2 block text-sm font-medium leading-6 text-gray-300 z-10">
                     <input
                       name="metrics-name"
                       type="radio"

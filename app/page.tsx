@@ -332,13 +332,14 @@ export default function Home() {
                 and Ookla Internet Speedtest data
               </p>
               <p className="mt-3 text-sm md:ml-6 md:mt-0">
-                <Link
+                <a
                   href="https://internetequity.uchicago.edu/resource/an-integrated-map-of-internet-access/"
+                  target="_blank"
                   className="whitespace-nowrap font-medium text-blue-600 hover:text-blue-400"
                 >
                   Learn more
                   <span aria-hidden="true"> &rarr;</span>
-                </Link>
+                </a>
               </p>
             </div>
           </div>
