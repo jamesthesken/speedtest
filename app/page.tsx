@@ -17,6 +17,7 @@ import Geolocator from "@/components/geolocator";
 import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
 import { supabase } from "../api";
 import Modal from "@/components/modal";
+import Survey from "@/components/survey";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -48,6 +49,18 @@ export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
   const [showButton, setShowButton] = useState(true);
   const [showSpinner, setShowSpinner] = useState(true);
+  const [ua, setUa] = useState<any>();
+  const [meta, setMeta] = useState<any>();
+  const [ts, setTs] = useState<any>();
+  const [pauseButton, setPauseButton] = useState(true);
+  const [resumeButton, setResumeButton] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [location, setLocation] = useState<GeoLocationSensorState>();
+  const [isFinished, setIsFinished] = useState(false);
+  const [dataSaved, setDataSaved] = useState(false);
+  const [surveyInfo, setSurveyInfo] = useState<any>();
+  const [submitted, setSubmitted] = useState(false);
+  const [singleSubmit, setSingleSubmit] = useState(true);
 
   const safeFetch = async (url: any, options = {}) => {
     try {
@@ -60,9 +73,7 @@ export default function Home() {
     }
   };
 
-  const [ua, setUa] = useState<any>();
-  const [meta, setMeta] = useState<any>();
-  const [ts, setTs] = useState<any>();
+  //----------Buttons to control speed test----------//
 
   const runSpeedTest = async () => {
     setUa({ user_agent: window.navigator.userAgent });
@@ -74,10 +85,6 @@ export default function Home() {
     engine.play();
     setShowButton(false);
   };
-
-  const [pauseButton, setPauseButton] = useState(true);
-  const [resumeButton, setResumeButton] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const pause = () => {
     engine.pause();
@@ -93,6 +100,8 @@ export default function Home() {
   const restart = () => {
     engine.restart();
   };
+
+  //----------Engine change updates-----------//
 
   engine.onRunningChange = (results) => {
     if (engine.isRunning) {
@@ -125,11 +134,12 @@ export default function Home() {
     const updateElement = document.getElementById("update");
     updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
     setIsFinished(true);
+    console.log(speedTestResults);
+    console.log(location);
+    console.log(surveyInfo);
   };
 
-  const [location, setLocation] = useState<GeoLocationSensorState>();
-  const [isFinished, setIsFinished] = useState(false);
-  const [dataSaved, setDataSaved] = useState(false);
+  //-----------Saving data to Supabase----------//
 
   const saveData = async () => {
     console.log("saving data");
@@ -144,6 +154,11 @@ export default function Home() {
     console.log(data, error);
   };
 
+  if(surveyInfo !== undefined && singleSubmit){
+    setSubmitted(true);
+    setSingleSubmit(false);
+  };
+
   if (
     !dataSaved &&
     isFinished &&
@@ -155,7 +170,7 @@ export default function Home() {
     setDataSaved(true);
     console.log(speedTestResults);
     console.log(location);
-  }
+  };
 
   return (
     <div className="flex items-center min-h-screen flex-col bg-slate-900">
@@ -185,7 +200,7 @@ export default function Home() {
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link
-                href="#speedtest"
+                href="#survey"
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Get started
@@ -205,6 +220,19 @@ export default function Home() {
             }}
           />
         </div>
+      </div>
+      <div className="items-center isolate px-6 py-24 sm:py-32 lg:px-8" id="survey">
+        <Survey setSurveyInfo={setSurveyInfo}/>
+        {submitted &&
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <Link
+              href="#speedtest"
+              className="rounded-md bg-indigo-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Go to speed test
+            </Link>
+          </div>
+        }
       </div>
       <main className="flex items-center flex-col" id="speedtest">
         <div className="mx-auto max-w-2xl mt-32 sm:mt-24 lg:mt-36">
