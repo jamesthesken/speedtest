@@ -158,7 +158,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <RocketLaunchIcon className="text-gray-100 h-5 w-5" />
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute lg:-top-7 lg:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Gaming scores are measured using your network latency, packet loss, and loaded latency.
                     The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 30 for great.
                   </span>
@@ -187,7 +187,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <VideoCameraIcon className="text-gray-100 h-5 w-5" /> 
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute lg:right-72 lg:left-auto sm:-top-7 sm:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Real time communications scores are measured using your network latency, jitter, packet loss, and loaded latency.
                     The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 40 for great.
                   </span>
