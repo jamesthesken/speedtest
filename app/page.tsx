@@ -18,6 +18,7 @@ import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
 import { supabase } from "../api";
 import Modal from "@/components/modal";
 import Survey from "@/components/survey";
+import Service from "@/components/service";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -45,6 +46,7 @@ export type SpeedTestResults = {
   };
 };
 
+
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
   const [showButton, setShowButton] = useState(true);
@@ -60,7 +62,6 @@ export default function Home() {
   const [dataSaved, setDataSaved] = useState(false);
   const [surveyInfo, setSurveyInfo] = useState<any>();
   const [submitted, setSubmitted] = useState(false);
-  const [singleSubmit, setSingleSubmit] = useState(true);
 
   const safeFetch = async (url: any, options = {}) => {
     try {
@@ -73,7 +74,7 @@ export default function Home() {
     }
   };
 
-  //----------Buttons to control speed test----------//
+//----------Buttons to control speed test----------//
 
   const runSpeedTest = async () => {
     setUa({ user_agent: window.navigator.userAgent });
@@ -101,7 +102,7 @@ export default function Home() {
     engine.restart();
   };
 
-  //----------Engine change updates-----------//
+//----------Engine change updates-----------//
 
   engine.onRunningChange = (results) => {
     if (engine.isRunning) {
@@ -139,7 +140,7 @@ export default function Home() {
     console.log(surveyInfo);
   };
 
-  //-----------Saving data to Supabase----------//
+//-----------Saving data to Supabase----------//
 
   const saveData = async () => {
     console.log("saving data");
@@ -152,11 +153,6 @@ export default function Home() {
       rtc: speedTestResults?.rtc,
     });
     console.log(data, error);
-  };
-
-  if(surveyInfo !== undefined && singleSubmit){
-    setSubmitted(true);
-    setSingleSubmit(false);
   };
 
   if (
@@ -187,9 +183,12 @@ export default function Home() {
             }}
           />
         </div>
+
+{/* ----------Introduction---------- */}
+
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-100 sm:text-6xl">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-4xl">
               Kauai Speed Test
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-200">
@@ -221,8 +220,11 @@ export default function Home() {
           />
         </div>
       </div>
+  
+{/* ----------Survey---------- */}
+
       <div className="items-center isolate px-6 py-24 sm:py-32 lg:px-8" id="survey">
-        <Survey setSurveyInfo={setSurveyInfo}/>
+        <Survey setSurveyInfo={setSurveyInfo} setSubmitted={setSubmitted}/>
         {submitted &&
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
@@ -234,23 +236,31 @@ export default function Home() {
           </div>
         }
       </div>
-      <main className="flex items-center flex-col" id="speedtest">
+
+{/* ----------Speed Test Intro---------- */}
+
+      <main className="flex items-center flex-col isolate px-6 py-16 sm:py-24 lg:px-auto " id="speedtest">
         <div className="mx-auto max-w-2xl mt-32 sm:mt-24 lg:mt-36">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-5xl">
-              Test your connection
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-200">
-              Click the button below to start an internet speed test. By running
-              this test you agree to our{" "}
-              <button
-                className="underline underline-offset-2 text-blue-500 hover:text-blue-300"
-                onClick={() => setOpen(true)}
-              >
-                Privacy Policy
-              </button>
-            </p>
-          </div>
+          {!isFinished &&
+            <div className="text-center">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-5xl">
+                Test your connection
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-gray-200">
+                Click the button below to start an internet speed test. By running
+                this test you agree to our{" "}
+                <button
+                  className="underline underline-offset-2 text-blue-500 hover:text-blue-300"
+                  onClick={() => setOpen(true)}
+                >
+                  Privacy Policy
+                </button>
+              </p>
+            </div>
+          }
+          {isFinished &&
+            <Service {...speedTestResults} isFinished={isFinished}/>
+          }
         </div>
         <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-8 mb-48">
           {showButton && (
@@ -271,6 +281,9 @@ export default function Home() {
               </div>
             </div>
           )}
+
+{/* ----------Running Speed Test---------- */}
+
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
               <Geolocator setLocation={setLocation} />
@@ -325,6 +338,8 @@ export default function Home() {
             </div>
           )}
 
+{/* ----------Results---------- */}
+
           {speedTestResults && (
             <div className="divide-y divide-gray-800">
               <div className="ml-0 h-7 mb-1">
@@ -344,6 +359,9 @@ export default function Home() {
           )}
         </div>
       </main>
+
+{/* ----------Map Intro---------- */}
+
       <div className="mb-10 w-auto">
         <div className="rounded-md border-blue-300 border-2 p-4">
           <div className="flex">
@@ -373,6 +391,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+{/* ----------Bottom and Modal---------- */}
+
       <div className="flex w-full">
         <BroadBandMap />
       </div>

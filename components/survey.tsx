@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { useRef, Dispatch, SetStateAction } from "react";
 import { useForm, SubmitHandler } from 'react-hook-form';
 
 
 type Props = {
     setSurveyInfo: (fill: any) => void;
+    setSubmitted: Dispatch<SetStateAction<boolean>>;
 }
 
 type Inputs = {
@@ -14,22 +15,23 @@ type Inputs = {
     zip: number;
 }
 
-export default function Survey({setSurveyInfo}: Props) {
+export default function Survey({setSurveyInfo, setSubmitted}: Props) {
   const htmlForm = useRef<HTMLFormElement | null>(null);
   const {register, handleSubmit, formState: { errors },} = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     setSurveyInfo(data); 
     alert('Survey submmitted');
+    setSubmitted(true);
   };
 
   return (
     <div>
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-200 sm:text-4xl">
+        <h2 className="text-2xl font-bold tracking-tight text-gray-200 sm:text-4xl">
           Kauai Residents Survey
         </h2>
-        <p className="mt-4 text-lg text-left leading-8 text-gray-300">
+        <p className="mt-4 text-lg leading-8 text-gray-300">
           This info will give us a better understanding of broadband service across the island.
         </p>
       </div>

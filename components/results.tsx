@@ -25,7 +25,11 @@ export default function Results(speedTestResults: SpeedTestResults) {
     <div className="bg-slate-800">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-rows-1 gap-px bg-slate-800 ">
+
+{/* ----------Big 4 Results---------- */}
+
           <div className="grid grid-cols-1 gap-px bg-slate-800 sm:grid-cols-2 lg:grid-cols-4 ">
+{/* -----Download----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8 ">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Download Speed
@@ -43,6 +47,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">Mbps</span>
               </p>
             </div>
+{/* -----Upload----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Upload Speed
@@ -60,6 +65,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">Mbps</span>
               </p>
             </div>
+{/* -----Latency----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Latency
@@ -77,6 +83,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">ms</span>
               </p>
             </div>
+{/* -----Jitter----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Jitter
@@ -95,6 +102,9 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </p>
             </div>
           </div>
+
+{/* ----------AIM Scores---------- */}
+
           <div className="flex flex-row bg-slate-900 py-8">
             <h1 className="text-gray-200">Network Quality Scores</h1>
             <div className="group relative w-max pl-8">
@@ -116,6 +126,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </span>
             </div>
           </div>
+{/* -----Streaming----- */}
           <div className="grid grid-cols-1 gap-px bg-slate-800 sm:grid-cols-2 lg:grid-cols-3">
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
@@ -147,6 +158,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 )}
               </p>
             </div>
+{/* -----Gaming----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
                 <p className="text-sm font-medium leading-6 text-gray-400">
@@ -176,6 +188,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 )}
               </p>
             </div>
+{/* -----RTC----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
                 <p className="text-sm font-medium leading-6 text-gray-400">
@@ -210,8 +223,9 @@ export default function Results(speedTestResults: SpeedTestResults) {
         </div>
       </div>
 
-      <br></br>
+{/* ----------Details---------- */}    
 
+      <br></br>
       <div className="mx-auto max-w-7xl">
         <h2 className="p-4 text-gray-200">Details</h2>
         <div className="grid grid-rows-1 divide-y-2 divide-gray-200 gap-px bg-slate-800 p-4 items-center">
