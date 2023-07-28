@@ -8,7 +8,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
   const [allData, setAllData] = useState<any>(null)
   const user = session?.user
 
-  const getProfile = useCallback(async () => {
+  const getData = useCallback(async () => {
     try {
       setLoading(true)
 
@@ -31,47 +31,14 @@ export default function AccountForm({ session }: { session: Session | null }) {
   }, [user, supabase])
 
   useEffect(() => {
-    getProfile()
-  }, [user, getProfile])
-
-  // async function updateProfile({
-  //   username,
-  //   website,
-  //   avatar_url,
-  // }: {
-  //   username: string | null
-  //   fullname: string | null
-  //   website: string | null
-  //   avatar_url: string | null
-  // }) {
-  //   try {
-  //     setLoading(true)
-
-  //     let { error } = await supabase.from('profiles').upsert({
-  //       id: user?.id as string,
-  //       full_name: fullname,
-  //       username,
-  //       website,
-  //       avatar_url,
-  //       updated_at: new Date().toISOString(),
-  //     })
-  //     if (error) throw error
-  //     alert('Profile updated!')
-  //   } catch (error) {
-  //     alert('Error updating the data!')
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
+    getData()
+  }, [user, getData])
 
   return (
     <div className="form-widget">
       <div>
-        <label htmlFor="email">Signed in as: </label>
-        <input id="email" type="text" value={session?.user.email} disabled />
+        <h1>Signed in as {session?.user.email} </h1>
       </div>
-      <pre>{JSON.stringify(allData, null, 2)}</pre>
-
       <div>
         <form action="/auth/signout" method="post">
           <button className="button block" type="submit">
@@ -79,6 +46,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
           </button>
         </form>
       </div>
+      <pre>{JSON.stringify(allData, null, 2)}</pre>
     </div>
   )
 }
