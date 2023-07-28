@@ -400,7 +400,7 @@ export default function Home() {
       </div>
       <Modal open={open} setOpen={setOpen} />
       <Contact />
-      <AuthForm />
+      <Link href="/data">See the data</Link>
       <Footer />
     </div>
   );
