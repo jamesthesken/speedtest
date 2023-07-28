@@ -19,6 +19,7 @@ import { supabase } from "../api";
 import Modal from "@/components/modal";
 import Survey from "@/components/survey";
 import Service from "@/components/service";
+import AuthForm from "@/components/auth-form";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -399,6 +400,7 @@ export default function Home() {
       </div>
       <Modal open={open} setOpen={setOpen} />
       <Contact />
+      <AuthForm />
       <Footer />
     </div>
   );
