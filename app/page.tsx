@@ -145,13 +145,18 @@ export default function Home() {
 
   const saveData = async () => {
     console.log("saving data");
-    const { data, error } = await supabase.from("speedtest").insert({
-      latitude: location?.latitude,
-      longitude: location?.longitude,
-      download: speedTestResults?.download,
-      upload: speedTestResults?.upload,
+    const { data, error } = await supabase.from("test").insert({
+      lat: location?.latitude,
+      long: location?.longitude,
+      down: speedTestResults?.download,
+      up: speedTestResults?.upload,
       latency: speedTestResults?.latency,
-      rtc: speedTestResults?.rtc,
+      region: speedTestResults?.region,
+      company: speedTestResults?.asOrganization,
+      hh_size: surveyInfo?.hhSize,
+      num_comp: surveyInfo?.numComputers,
+      zip: surveyInfo?.zip,
+      street_address: surveyInfo?.address + " " + surveyInfo?.city,
     });
     console.log(data, error);
   };
@@ -165,8 +170,6 @@ export default function Home() {
   ) {
     saveData();
     setDataSaved(true);
-    console.log(speedTestResults);
-    console.log(location);
   };
 
   return (
