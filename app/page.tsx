@@ -227,7 +227,7 @@ export default function Home() {
   
 {/* ----------Survey---------- */}
 
-      {/* <div className="items-center isolate px-6 py-24 sm:py-32 lg:px-8" id="survey">
+      <div className="items-center isolate px-6 py-24 sm:py-32 lg:px-8" id="survey">
         <Survey setSurveyInfo={setSurveyInfo} setSubmitted={setSubmitted}/>
         {submitted &&
           <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -239,7 +239,7 @@ export default function Home() {
             </Link>
           </div>
         }
-      </div> */}
+      </div>
 
 {/* ----------Speed Test Intro---------- */}
 
@@ -403,7 +403,7 @@ export default function Home() {
       </div>
       <Modal open={open} setOpen={setOpen} />
       <Contact />
-      {/* <Link href="/data">See the data</Link> */}
+      <Link href="/data">See the data</Link>
       <Footer />
     </div>
   );
