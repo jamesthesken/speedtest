@@ -17,6 +17,8 @@ import Geolocator from "@/components/geolocator";
 import { GeoLocationSensorState } from "react-use/lib/useGeolocation";
 import { supabase } from "../api";
 import Modal from "@/components/modal";
+import Survey from "@/components/survey";
+import Service from "@/components/service";
 
 export type SpeedTestResults = {
   download?: number | undefined;
@@ -44,10 +46,22 @@ export type SpeedTestResults = {
   };
 };
 
+
 export default function Home() {
   const [speedTestResults, setSpeedTestResults] = useState<any>();
   const [showButton, setShowButton] = useState(true);
   const [showSpinner, setShowSpinner] = useState(true);
+  const [ua, setUa] = useState<any>();
+  const [meta, setMeta] = useState<any>();
+  const [ts, setTs] = useState<any>();
+  const [pauseButton, setPauseButton] = useState(true);
+  const [resumeButton, setResumeButton] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [location, setLocation] = useState<GeoLocationSensorState>();
+  const [isFinished, setIsFinished] = useState(false);
+  const [dataSaved, setDataSaved] = useState(false);
+  const [surveyInfo, setSurveyInfo] = useState<any>();
+  const [submitted, setSubmitted] = useState(false);
 
   const safeFetch = async (url: any, options = {}) => {
     try {
@@ -60,9 +74,7 @@ export default function Home() {
     }
   };
 
-  const [ua, setUa] = useState<any>();
-  const [meta, setMeta] = useState<any>();
-  const [ts, setTs] = useState<any>();
+//----------Buttons to control speed test----------//
 
   const runSpeedTest = async () => {
     setUa({ user_agent: window.navigator.userAgent });
@@ -74,10 +86,6 @@ export default function Home() {
     engine.play();
     setShowButton(false);
   };
-
-  const [pauseButton, setPauseButton] = useState(true);
-  const [resumeButton, setResumeButton] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const pause = () => {
     engine.pause();
@@ -93,6 +101,8 @@ export default function Home() {
   const restart = () => {
     engine.restart();
   };
+
+//----------Engine change updates-----------//
 
   engine.onRunningChange = (results) => {
     if (engine.isRunning) {
@@ -125,21 +135,27 @@ export default function Home() {
     const updateElement = document.getElementById("update");
     updateElement?.replaceChild(finishedNode, updateElement.childNodes[0]);
     setIsFinished(true);
+    console.log(speedTestResults);
+    console.log(location);
+    console.log(surveyInfo);
   };
 
-  const [location, setLocation] = useState<GeoLocationSensorState>();
-  const [isFinished, setIsFinished] = useState(false);
-  const [dataSaved, setDataSaved] = useState(false);
+//-----------Saving data to Supabase----------//
 
   const saveData = async () => {
     console.log("saving data");
-    const { data, error } = await supabase.from("speedtest").insert({
-      latitude: location?.latitude,
-      longitude: location?.longitude,
-      download: speedTestResults?.download,
-      upload: speedTestResults?.upload,
+    const { data, error } = await supabase.from("test").insert({
+      lat: location?.latitude,
+      long: location?.longitude,
+      down: speedTestResults?.download,
+      up: speedTestResults?.upload,
       latency: speedTestResults?.latency,
-      rtc: speedTestResults?.rtc,
+      region: speedTestResults?.region,
+      company: speedTestResults?.asOrganization,
+      hh_size: surveyInfo?.hhSize,
+      num_comp: surveyInfo?.numComputers,
+      zip: surveyInfo?.zip,
+      street_address: surveyInfo?.address + " " + surveyInfo?.city,
     });
     console.log(data, error);
   };
@@ -153,9 +169,7 @@ export default function Home() {
   ) {
     saveData();
     setDataSaved(true);
-    console.log(speedTestResults);
-    console.log(location);
-  }
+  };
 
   return (
     <div className="flex items-center min-h-screen flex-col bg-slate-900">
@@ -172,8 +186,12 @@ export default function Home() {
             }}
           />
         </div>
+
+{/* ----------Introduction---------- */}
+
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
+
             <h1 className="text-4xl font-bold tracking-tight text-gray-100 sm:text-6xl">
               Kauai Speed Test
             </h1>
@@ -206,23 +224,47 @@ export default function Home() {
           />
         </div>
       </div>
-      <main className="flex items-center flex-col" id="speedtest">
-        <div className="mx-auto max-w-2xl mt-32 sm:mt-24 lg:mt-36">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-5xl">
-              Test your connection
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-200">
-              Click the button below to start an internet speed test. By running
-              this test you agree to our{" "}
-              <button
-                className="underline underline-offset-2 text-blue-500 hover:text-blue-300"
-                onClick={() => setOpen(true)}
-              >
-                Privacy Policy
-              </button>
-            </p>
+  
+{/* ----------Survey---------- */}
+
+      {/* <div className="items-center isolate px-6 py-24 sm:py-32 lg:px-8" id="survey">
+        <Survey setSurveyInfo={setSurveyInfo} setSubmitted={setSubmitted}/>
+        {submitted &&
+          <div className="mt-10 flex items-center justify-center gap-x-6">
+            <Link
+              href="#speedtest"
+              className="rounded-md bg-indigo-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Go to speed test
+            </Link>
           </div>
+        }
+      </div> */}
+
+{/* ----------Speed Test Intro---------- */}
+
+      <main className="flex items-center flex-col isolate px-6 py-16 sm:py-24 lg:px-auto " id="speedtest">
+        <div className="mx-auto max-w-2xl mt-32 sm:mt-24 lg:mt-36">
+          {!isFinished &&
+            <div className="text-center">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-5xl">
+                Test your connection
+              </h1>
+              <p className="mt-6 text-lg leading-8 text-gray-200">
+                Click the button below to start an internet speed test. By running
+                this test you agree to our{" "}
+                <button
+                  className="underline underline-offset-2 text-blue-500 hover:text-blue-300"
+                  onClick={() => setOpen(true)}
+                >
+                  Privacy Policy
+                </button>
+              </p>
+            </div>
+          }
+          {isFinished &&
+            <Service {...speedTestResults} isFinished={isFinished}/>
+          }
         </div>
         <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex-col mt-8 mb-48">
           {showButton && (
@@ -243,6 +285,9 @@ export default function Home() {
               </div>
             </div>
           )}
+
+{/* ----------Running Speed Test---------- */}
+
           {!showButton && (
             <div className="flex flex-row justify-center space-x-10 pb-5 ">
               <Geolocator setLocation={setLocation} />
@@ -297,6 +342,8 @@ export default function Home() {
             </div>
           )}
 
+{/* ----------Results---------- */}
+
           {speedTestResults && (
             <div className="divide-y divide-gray-800">
               <div className="ml-0 h-7 mb-1">
@@ -316,6 +363,9 @@ export default function Home() {
           )}
         </div>
       </main>
+
+{/* ----------Map Intro---------- */}
+
       <div className="mb-10 w-auto">
         <div className="rounded-md border-blue-300 border-2 p-4">
           <div className="flex">
@@ -332,18 +382,22 @@ export default function Home() {
                 and Ookla Internet Speedtest data
               </p>
               <p className="mt-3 text-sm md:ml-6 md:mt-0">
-                <Link
+                <a
                   href="https://internetequity.uchicago.edu/resource/an-integrated-map-of-internet-access/"
+                  target="_blank"
                   className="whitespace-nowrap font-medium text-blue-600 hover:text-blue-400"
                 >
                   Learn more
                   <span aria-hidden="true"> &rarr;</span>
-                </Link>
+                </a>
               </p>
             </div>
           </div>
         </div>
       </div>
+
+{/* ----------Bottom and Modal---------- */}
+
       <div className="flex w-full">
         <BroadBandMap />
       </div>

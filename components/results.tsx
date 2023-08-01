@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { SpeedTestResults } from "@/app/page";
 import { InformationCircleIcon, TvIcon, RocketLaunchIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 
-function formatBytes(bits: number, decimals = 2) {
+export function formatBytes(bits: number, decimals = 2) {
   if (!+bits) return "0 Bits";
 
   const k = 1000;
@@ -25,7 +25,11 @@ export default function Results(speedTestResults: SpeedTestResults) {
     <div className="bg-slate-800">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-rows-1 gap-px bg-slate-800 ">
+
+{/* ----------Big 4 Results---------- */}
+
           <div className="grid grid-cols-1 gap-px bg-slate-800 sm:grid-cols-2 lg:grid-cols-4 ">
+{/* -----Download----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8 ">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Download Speed
@@ -43,6 +47,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">Mbps</span>
               </p>
             </div>
+{/* -----Upload----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Upload Speed
@@ -60,6 +65,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">Mbps</span>
               </p>
             </div>
+{/* -----Latency----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Latency
@@ -77,6 +83,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 <span className="text-sm text-gray-400">ms</span>
               </p>
             </div>
+{/* -----Jitter----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm font-medium leading-6 text-gray-400">
                 Jitter
@@ -95,19 +102,31 @@ export default function Results(speedTestResults: SpeedTestResults) {
               </p>
             </div>
           </div>
+
+{/* ----------AIM Scores---------- */}
+
           <div className="flex flex-row bg-slate-900 py-8">
             <h1 className="text-gray-200">Network Quality Scores</h1>
             <div className="group relative w-max pl-8">
-              <InformationCircleIcon className="text-gray-100 h-5 w-5" />
-              <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+              <InformationCircleIcon className="text-gray-100 h-5 w-5" /> 
+              <span className="pointer-events bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-7 -end-36 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 -z-10 group-hover:z-10">
                 Aggregated Internet Measurement (AIM) helps you understand your
                 Internet quality to identify scenarios that your Internet
                 connection is good or bad for. Typically, an Internet speed test
                 provides you with upload and download speeds, which may not
-                always provide a holistic view of your Internet quality.
+                always provide a holistic view of your Internet quality.{" "}
+                <a
+                  href="https://developers.cloudflare.com/speed/aim/"
+                  target="_blank"
+                  className="whitespace-nowrap font-medium text-blue-600 hover:text-blue-400"
+                >
+                  More on AIM
+                  <span aria-hidden="true"> &rarr;</span>
+                </a>
               </span>
             </div>
           </div>
+{/* -----Streaming----- */}
           <div className="grid grid-cols-1 gap-px bg-slate-800 sm:grid-cols-2 lg:grid-cols-3">
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
@@ -120,7 +139,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <TvIcon className="text-gray-100 h-5 w-5" />
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute sm:-top-7 sm:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Streaming scores are measured using your network latency, packet loss, download speed, and loaded latency.
                     The aggregated score of these measurements must be above: 15 for poor, 20 for average, 40 for good, and 60 for great.
                   </span>
@@ -139,6 +158,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 )}
               </p>
             </div>
+{/* -----Gaming----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
                 <p className="text-sm font-medium leading-6 text-gray-400">
@@ -150,7 +170,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 </p>
                 <div className="group relative w-max">
                   <RocketLaunchIcon className="text-gray-100 h-5 w-5" />
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute lg:-top-7 lg:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Gaming scores are measured using your network latency, packet loss, and loaded latency.
                     The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 30 for great.
                   </span>
@@ -168,6 +188,7 @@ export default function Results(speedTestResults: SpeedTestResults) {
                 )}
               </p>
             </div>
+{/* -----RTC----- */}
             <div className="bg-slate-800 px-4 py-6 sm:px-6 lg:px-8">
               <div className="flex flex-row justify-between">
                 <p className="text-sm font-medium leading-6 text-gray-400">
@@ -178,8 +199,8 @@ export default function Results(speedTestResults: SpeedTestResults) {
                   )}
                 </p>
                 <div className="group relative w-max">
-                  <VideoCameraIcon className="text-gray-100 h-5 w-5" />
-                  <span className="pointer-events-none bg-gray-700 w-96 absolute -top-7 left-0 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
+                  <VideoCameraIcon className="text-gray-100 h-5 w-5" /> 
+                  <span className="pointer-events-none bg-gray-700 w-96 absolute lg:right-72 lg:left-auto sm:-top-7 sm:left-0 top-20 -end-4 opacity-0 transition-opacity group-hover:opacity-100 rounded-lg p-8 z-10">
                     Real time communications scores are measured using your network latency, jitter, packet loss, and loaded latency.
                     The aggregated score of these measurements must be above: 5 for poor, 15 for average, 25 for good, and 40 for great.
                   </span>
@@ -202,8 +223,9 @@ export default function Results(speedTestResults: SpeedTestResults) {
         </div>
       </div>
 
-      <br></br>
+{/* ----------Details---------- */}    
 
+      <br></br>
       <div className="mx-auto max-w-7xl">
         <h2 className="p-4 text-gray-200">Details</h2>
         <div className="grid grid-rows-1 divide-y-2 divide-gray-200 gap-px bg-slate-800 p-4 items-center">
