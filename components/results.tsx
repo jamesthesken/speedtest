@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { SpeedTestResults } from "@/app/page";
 import { InformationCircleIcon, TvIcon, RocketLaunchIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
 
-function formatBytes(bits: number, decimals = 2) {
+export function formatBytes(bits: number, decimals = 2) {
   if (!+bits) return "0 Bits";
 
   const k = 1000;
