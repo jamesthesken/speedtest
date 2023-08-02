@@ -29,7 +29,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
     } finally {
       setLoading(false)
     }
-  }, [user, supabase])
+  }, [supabase])
 
   useEffect(() => {
     getData()

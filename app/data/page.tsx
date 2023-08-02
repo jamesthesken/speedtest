@@ -12,12 +12,11 @@ import {
   TableBody,
   TableCell,
   Text,
-  Title,
 } from "@tremor/react";
 import { Database } from "@/types/supabase"
 import { formatBytes } from "@/components/results"
 
-const sortTable = (items: any, config = null) => {
+const SortTable = (items: any, config = null) => {
   const [sortConfig, setSortConfig] = useState<any>(config);
 
   const sortedData = useMemo(() => {
@@ -48,7 +47,7 @@ const sortTable = (items: any, config = null) => {
 };
 
 const PublicTable = (props: any) => {
-  const { items, requestSort, sortConfig } = sortTable(props.myData);
+  const { items, requestSort, sortConfig } = SortTable(props.myData);
   const getClassNamesFor = (name: any) => {
     if (!sortConfig) {
       return;
@@ -145,7 +144,7 @@ export default function PublicData() {
     } finally {
       setLoading(false)
     }
-  }, [supabase])
+  }, [])
 
   useEffect(() => {
     getData()
