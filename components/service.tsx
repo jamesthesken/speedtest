@@ -1,38 +1,38 @@
 import { SpeedTestResults } from "@/app/page";
 import { useEffect, useState } from "react";
 
+const serviceScore = {
+  error: {
+    name: "error",
+    down: "error",
+    up: "error",
+    opt: "or",
+  },
+  unserved: {
+    name: "Unserved",
+    down: "less than 25 mbps",
+    up: "less than 3 mbps",
+    opt: "or",
+    emoji: "🆘",
+  },
+  underserved: {
+    name: "Underserved",
+    down: "less than 100 mbps",
+    up: "less than 20 mbps",
+    opt: "or",
+    emoji: "⚠️",
+  },
+  served: {
+    name: "Well served",
+    down: "100 mbps or greater",
+    up: "20 mbps or greater",
+    opt: "and",
+    emoji: "👍",
+  },
+};
+
 export default function Service(speedTestResults: SpeedTestResults, isFinished: boolean){
-
-  const serviceScore = {
-    error: {
-      name: "error",
-      down: "error",
-      up: "error",
-      opt: "or",
-    },
-    unserved: {
-      name: "Unserved",
-      down: "less than 25 mbps",
-      up: "less than 3 mbps",
-      opt: "or",
-      emoji: "🆘",
-    },
-    underserved: {
-      name: "Underserved",
-      down: "less than 100 mbps",
-      up: "less than 20 mbps",
-      opt: "or",
-      emoji: "⚠️",
-    },
-    served: {
-      name: "Well served",
-      down: "100 mbps or greater",
-      up: "20 mbps or greater",
-      opt: "and",
-      emoji: "👍",
-    },
-  };
-
+  
   const [score, setScore] = useState<any>(serviceScore.error);
 
   useEffect (() => {
@@ -45,7 +45,7 @@ export default function Service(speedTestResults: SpeedTestResults, isFinished: 
         setScore (serviceScore.served);
       }
     }
-  },[isFinished]);
+  },[ isFinished, speedTestResults.download, speedTestResults.upload]);
 
   return (
     <div className="py-10 text-center items-center">

@@ -403,6 +403,7 @@ export default function Home() {
       </div>
       <Modal open={open} setOpen={setOpen} />
       <Contact />
+      <Link href="/data">See the data</Link>
       <Footer />
     </div>
   );

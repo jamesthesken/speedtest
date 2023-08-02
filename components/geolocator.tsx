@@ -10,6 +10,6 @@ export default function Geolocator({setLocation}: Props){
   const location = useGeolocation();
   useEffect (() => {
     setLocation(location);
-  },[location]);
+  },[setLocation, location]);
   return(null);
 }
