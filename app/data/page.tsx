@@ -65,10 +65,10 @@ const PublicTable = (props: any) => {
             <TableHeaderCell>Provider{" "}
               <button type="button" onClick={() => requestSort('company')} className={getClassNamesFor('company')}>&#8597;</button>
             </TableHeaderCell>
-            <TableHeaderCell>Download Speed{" "}
+            <TableHeaderCell>Download mbps{" "}
               <button type="button" onClick={() => requestSort('down')} className={getClassNamesFor('down')}>&#8597;</button>
             </TableHeaderCell>
-            <TableHeaderCell>Upload Speed{" "}
+            <TableHeaderCell>Upload mbps{" "}
               <button type="button" onClick={() => requestSort('up')} className={getClassNamesFor('up')}>&#8597;</button>
             </TableHeaderCell>
             <TableHeaderCell>Latency{" "}
@@ -152,10 +152,10 @@ export default function PublicData() {
 
   return(
     <div>
-      <div className="absolute top right-10">
+      <div className="md:absolute md:top-0 md:right-5 md:p-0 px-8 pt-4">
         <AuthForm />
       </div>
-      <div className="mx-auto max-w-2xl py-12 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-2xl py-12 md:py-20 lg:py-24 px-2 sm:px-auto">
         <div className="text-center">
           <h1 className="text-2xl font-bold tracking-tight text-gray-100 sm:text-4xl">
             Speed Test Data
