@@ -1,6 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState, useMemo } from 'react'
-import { Session, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { User, Session, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/types/supabase'
 import { formatBytes } from '@/components/results'
 import {
@@ -56,7 +56,7 @@ const PrivateTable = (props: any) => {
     <Card className="py-10 px-2">
       <Table>
         <TableHead>
-          <TableRow>
+          <TableRow className="opacity-90 bg-slate-900 sticky top-0">
             <TableHeaderCell>State{" "}
               <button type="button" onClick={() => requestSort('region')} className={getClassNamesFor('region')}>&#8597;</button>
             </TableHeaderCell>
@@ -146,25 +146,31 @@ export default function AccountForm({ session }: { session: Session | null }) {
   const supabase = createClientComponentClient<Database>()
   const [loading, setLoading] = useState(true)
   const [allData, setAllData] = useState<any>(null)
-  const user = session?.user
+  const user : User | undefined = session?.user
 
   const getData = useCallback(async () => {
+    
+    // if (!user) {
+    //   return await supabase.auth.signOut()
+    // }
+    // if (user.iat + 3600 > Date.now()/1000) {
+    //   return await supabase.auth.signOut()
+    // }
+
     try {
       setLoading(true)
 
       let { data, error, status } = await supabase
         .from('test')
         .select()
-        
       if (error && status !== 406) {
         throw error
       }
-
       if (data) {
         setAllData(data)
       }
     } catch (error) {
-      alert('Error loading user data!')
+      alert('Error loading data!')
     } finally {
       setLoading(false)
     }
@@ -175,7 +181,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
   }, [user, getData])
 
   return (
-    <div>
+    <div className="bg-slate-900">
       <div className="top-0 w-full bg-slate-800 border-solid border-4 border-slate-900 text-center rounded-xl opacity-90 z-10">
         <div className="pt-5 pb-2">
           <h1 className="text-lg">Signed in as <u>{session?.user.email}</u></h1>
